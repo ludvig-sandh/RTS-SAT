@@ -1,6 +1,7 @@
 #pragma once
 #include "FeasibilityTest.hpp"
 
+// Exact test
 class EDFProcessorDemandTest : public FeasibilityTest {
 private:
     bool IsApplicable(const TaskSet &taskSet) const override;
