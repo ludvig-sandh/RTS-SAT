@@ -9,8 +9,6 @@ public:
     // Template method: final to prevent override
     virtual bool RunTest(const TaskSet& taskSet) final;
 
-    double GetUtilization(const TaskSet &taskSet) const;
-
 protected:
     // Checks if this feasibility test is applicable to the given task set
     virtual bool IsApplicable(const TaskSet &taskSet) const = 0;

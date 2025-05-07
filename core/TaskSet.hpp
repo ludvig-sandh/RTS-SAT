@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <queue>
+#include <unordered_set>
 #include "Task.hpp"
 
 class TaskSet {
@@ -28,6 +29,10 @@ public:
 
     // Returns a vector of all task instances within the hyper period, sorted by ascending arrival time.
     std::deque<TaskJob> GetAllTaskJobs() const;
+
+    // Returns a set of all absolute deadlines
+    std::unordered_set<uint32_t> GetAbsoluteDeadlines() const;
+
     void PrintPriorities() const;
 
     // A task set is synchronous if and only if all tasks have the same offsets.
@@ -38,4 +43,7 @@ public:
 
     // A task set has constrained deadlines if and only if all relative deadlines are less than or equal to the relative periods.
     bool HasConstrainedDeadlines() const;
+
+    // The utilization is the sum over each task execution time (C) divided by its period (T)
+    double GetUtilization() const;
 };

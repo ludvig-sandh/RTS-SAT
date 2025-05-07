@@ -87,6 +87,21 @@ std::deque<TaskJob> TaskSet::GetAllTaskJobs() const {
     return instances;
 }
 
+std::unordered_set<uint32_t> TaskSet::GetAbsoluteDeadlines() const {
+    std::unordered_set<uint32_t> deadlines;
+    uint32_t hyperPeriod = GetHyperPeriod();
+
+    // For each task, generate all absolute deadlines
+    for (const PeriodicTask &task : m_tasks) {
+        uint32_t numInstances = hyperPeriod / task.T;
+        for (uint32_t instanceNumber = 1; instanceNumber < numInstances + 1; instanceNumber++) {
+            deadlines.insert((instanceNumber - 1) * task.T + task.D); // absolute deadline
+        }
+    }
+
+    return deadlines;
+}
+
 void TaskSet::PrintPriorities() const {
     std::cout << "Printing task priorities (higher number = higher priority)" << std::endl;
     for (const PeriodicTask &task : m_tasks) {
@@ -120,4 +135,12 @@ bool TaskSet::HasConstrainedDeadlines() const {
         }
     }
     return true;
+}
+
+double TaskSet::GetUtilization() const {
+    double utilization = 0.0;
+    for (const PeriodicTask &task : m_tasks) {
+        utilization += static_cast<double>(task.C) / static_cast<double>(task.T);
+    }
+    return utilization;
 }

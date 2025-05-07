@@ -8,7 +8,7 @@ bool LiuLaylandUtilizationBoundTest::IsApplicable(const TaskSet &taskSet) const 
 
 bool LiuLaylandUtilizationBoundTest::RunTestImpl(const TaskSet &taskSet) const {
     uint32_t numTasks = taskSet.GetNumTasks();
-    return GetUtilization(taskSet) <= GetUtilizationBound(numTasks);
+    return taskSet.GetUtilization() <= GetUtilizationBound(numTasks);
 }
 
 double LiuLaylandUtilizationBoundTest::GetUtilizationBound(uint32_t numTasks) const {
