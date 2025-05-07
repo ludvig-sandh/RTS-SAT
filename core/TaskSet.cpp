@@ -18,6 +18,16 @@ std::vector<PeriodicTask> TaskSet::GetCopyOfTasks() {
     return m_tasks;
 }
 
+std::vector<PeriodicTask> TaskSet::GetHigherPriorityTasks(uint32_t prio) const {
+    std::vector<PeriodicTask> tasks;
+    for (const PeriodicTask &task : m_tasks) {
+        if (task.prio > prio) {
+            tasks.push_back(task);
+        }
+    }
+    return tasks;
+}
+
 void TaskSet::SetPriority(uint32_t taskId, uint32_t prio) {
     for (PeriodicTask &task : m_tasks) {
         if (task.id == taskId) {
@@ -97,6 +107,15 @@ bool TaskSet::IsSynchronous() const {
 bool TaskSet::HasImplicitDeadlines() const {
     for (const PeriodicTask &task : m_tasks) {
         if (task.D != task.T) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool TaskSet::HasConstrainedDeadlines() const {
+    for (const PeriodicTask &task : m_tasks) {
+        if (task.D > task.T) {
             return false;
         }
     }

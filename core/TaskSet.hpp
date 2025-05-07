@@ -9,8 +9,15 @@ private:
     std::vector<PeriodicTask> m_tasks;
 public:
     TaskSet(std::vector<PeriodicTask> tasks);
+
+    // Returns a reference to the vector of tasks
     const std::vector<PeriodicTask> &GetTasks() const;
+
+    // Returns a copy of the vector of tasks
     std::vector<PeriodicTask> GetCopyOfTasks();
+
+    // Returns a vector of all tasks with higher priority than prio
+    std::vector<PeriodicTask> GetHigherPriorityTasks(uint32_t prio) const;
 
     // Sets the priority of a specific task
     void SetPriority(uint32_t taskId, uint32_t prio);
@@ -28,4 +35,7 @@ public:
 
     // A task set has implicit deadlines if and only if all relative deadlines are equal to the relative periods.
     bool HasImplicitDeadlines() const;
+
+    // A task set has constrained deadlines if and only if all relative deadlines are less than or equal to the relative periods.
+    bool HasConstrainedDeadlines() const;
 };
