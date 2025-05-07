@@ -12,5 +12,5 @@ public:
 
     void SetPreemptionsAllowed(bool isAllowed);
 
-    Schedule run(TaskSet& taskSet) const;
+    Schedule run(TaskSet taskSet) const;
 };
