@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <stdexcept>
 #include "Task.hpp"
 #include "TaskSet.hpp"
 #include "Schedule.hpp"
@@ -45,7 +46,8 @@ protected:
                 readyQueue.pop();
                 runningJob->start = currentTime;
                 // Now we have a running job, so let next iteration of the loop decide which case we are in
-            }else if (runningJob && (readyQueue.empty() || !priorityComp(*runningJob, readyQueue.top()))) { // Case 3: We have a running job, and no higher priority task has arrived
+            }else if (runningJob && (readyQueue.empty() || !allowPreemptions || !priorityComp(*runningJob, readyQueue.top()))) {
+                // Case 3: We have a running job, and no higher priority task has arrived, or preemptions are not allowed.
                 uint32_t currentJobFinishTime = runningJob->start + runningJob->remainingTime;
                 uint32_t nextArrivalTime = pendingJobs.empty() ? UINT32_MAX : pendingJobs.front().arrival;
                 if (pendingJobs.empty() || currentJobFinishTime <= nextArrivalTime) {
@@ -82,6 +84,8 @@ protected:
     
                 delete runningJob;
                 runningJob = nullptr;
+            }else {
+                throw std::runtime_error("Invalid case in GenerateScheduleImpl...");
             }
         }
     

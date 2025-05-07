@@ -14,9 +14,6 @@ struct StaticPrioritiesComparator {
 class StaticPriorityScheduler : public SchedulingAlgorithm {
 public:
     Schedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions) override;
-private:
-    Schedule HelpGenerateScheduleWithoutPreemptions(TaskSet &taskSet);
-    Schedule HelpGenerateScheduleWithPreemptions(TaskSet &taskSet);
     
     virtual void AssignStaticPriorities(TaskSet& taskSet) = 0;
 };
