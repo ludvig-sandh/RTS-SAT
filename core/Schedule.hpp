@@ -12,6 +12,6 @@ private:
 public:
     Schedule(TaskSet taskset) : m_taskset(taskset) {};
     void AddTaskJob(TaskJob taskFragment);
-    bool AreDeadlinesMet();
+    bool AreDeadlinesMet(bool shouldPrintMiss);
     void PrintSchedule();
 };

@@ -11,13 +11,24 @@ TaskSet getTaskSet1() {
     return TaskSet(tasks);
 }
 
+TaskSet getTaskSet2() {
+    std::vector<PeriodicTask> tasks;
+    tasks.push_back(PeriodicTask(1, 3, 5, 1));
+    tasks.push_back(PeriodicTask(5, 6, 10, 2));
+    return TaskSet(tasks);
+}
+
 int main() {
     std::cout << "Hello world!\n" << std::endl;
     
     RMScheduler alg;
     Simulator simulator(&alg);
-    TaskSet taskSet = getTaskSet1();
+    TaskSet taskSet = getTaskSet2();
     Schedule schedule = simulator.run(taskSet);
+    std::cout << "Checking if deadlines are respected..." << std::endl;
+    if (schedule.AreDeadlinesMet(true)) {
+        std::cout << "No task missed their deadline.\n" << std::endl;
+    }
 
     taskSet.PrintPriorities();
     schedule.PrintSchedule();

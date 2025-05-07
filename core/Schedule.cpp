@@ -7,10 +7,14 @@ void Schedule::AddTaskJob(TaskJob taskJob) {
     m_scheduledTasks.push_back(taskJob);
 }
 
-bool Schedule::AreDeadlinesMet() {
+bool Schedule::AreDeadlinesMet(bool shouldPrintMiss) {
     // Check if all fragments meet the deadlines of the tasks they belong to
     for (const TaskJob &taskJob : m_scheduledTasks) {
         if (taskJob.end > taskJob.deadline) {
+            if (shouldPrintMiss) {
+                std::cout << "The following task job didn't meet its deadline:" << std::endl;
+                taskJob.Print();
+            }
             return false;
         }
     }
