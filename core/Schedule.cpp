@@ -25,7 +25,11 @@ bool Schedule::AreDeadlinesMet(bool shouldPrintMiss) {
 void Schedule::PrintSchedule() {
     std::cout << "Printing schedule" << std::endl;
     for (const TaskJob &job : m_scheduledTasks) {
-        std::cout << "Task " << job.taskId << " scheduled from " << job.start << " to " << job.end << " (instance " << job.instanceNumber << ")" << std::endl;
+        std::cout << "Task " << job.taskId << " scheduled from " << job.start << " to " << job.end << " (instance " << job.instanceNumber << ")";
+        if (job.end > job.deadline) {
+            std::cout << " (missed deadline)";
+        }
+        std::cout << std::endl;
     }
     std::cout << std::endl;
 }

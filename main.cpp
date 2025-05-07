@@ -3,6 +3,7 @@
 
 #include "Simulator.hpp"
 #include "RMScheduler.hpp"
+#include "DMScheduler.hpp"
 
 TaskSet getTaskSet1() {
     std::vector<PeriodicTask> tasks;
@@ -18,12 +19,19 @@ TaskSet getTaskSet2() {
     return TaskSet(tasks);
 }
 
+TaskSet getTaskSet3() {
+    std::vector<PeriodicTask> tasks;
+    tasks.push_back(PeriodicTask(1, 2, 10, 1));
+    tasks.push_back(PeriodicTask(2, 4, 5, 2));
+    return TaskSet(tasks);
+}
+
 int main() {
     std::cout << "Hello world!\n" << std::endl;
     
     RMScheduler alg;
     Simulator simulator(&alg);
-    TaskSet taskSet = getTaskSet2();
+    TaskSet taskSet = getTaskSet3();
     Schedule schedule = simulator.run(taskSet);
     std::cout << "Checking if deadlines are respected..." << std::endl;
     if (schedule.AreDeadlinesMet(true)) {

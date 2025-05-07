@@ -1,14 +1,14 @@
 #include <algorithm>
-#include "RMScheduler.hpp"
+#include "DMScheduler.hpp"
 
-void RMScheduler::AssignStaticPriorities(TaskSet& taskSet) {
+void DMScheduler::AssignStaticPriorities(TaskSet& taskSet) {
     // Get local copy of the tasks in the task set
     std::vector<PeriodicTask> tasks = taskSet.GetCopyOfTasks();
 
     // Sort by period (descending), so lower T => higher priority
     std::sort(tasks.begin(), tasks.end(),
               [](const PeriodicTask& a, const PeriodicTask& b) {
-                  return a.T > b.T;
+                  return a.D > b.D;
               });
     
     // Assign priority (0 = lowest)

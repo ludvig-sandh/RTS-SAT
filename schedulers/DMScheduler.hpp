@@ -2,7 +2,7 @@
 
 #include "StaticPriorityScheduler.hpp"
 
-class RMScheduler : public StaticPriorityScheduler {
+class DMScheduler : public StaticPriorityScheduler {
 private:
     void AssignStaticPriorities(TaskSet& taskSet) override;
 };
