@@ -3,9 +3,9 @@
 This project is a real-time task scheduling simulator and analysis tool written in C++.
 
 ## Todo list
-- [ ] Preemptive EDF scheduling
-- [ ] Random task set generator
+- [X] Preemptive EDF scheduling
 - [ ] Feasibility tests
+- [ ] Random task set generator
 - [ ] Unit tests
 - [ ] Compile to a static library
 - [ ] Add sample code that uses library

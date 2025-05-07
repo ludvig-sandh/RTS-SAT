@@ -10,6 +10,7 @@ BIN := $(BUILD_DIR)/rts-sat
 SRCS := $(wildcard core/*.cpp) \
         $(wildcard schedulers/*.cpp) \
         $(wildcard sim/*.cpp) \
+        $(wildcard feasibility/*.cpp) \
         main.cpp
 
 # Object files (build/foo.o for foo.cpp)
