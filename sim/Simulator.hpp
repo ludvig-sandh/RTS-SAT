@@ -5,12 +5,12 @@
 
 class Simulator {
     SchedulingAlgorithm* m_algorithm;
+    bool m_isPreemptionsAllowed = true;
 
 public:
     Simulator(SchedulingAlgorithm* algo) : m_algorithm(algo) {}
 
-    Schedule run(TaskSet& taskSet) {
-        Schedule schedule = m_algorithm->GenerateSchedule(taskSet);
-        return schedule;
-    }
+    void SetPreemptionsAllowed(bool isAllowed);
+
+    Schedule run(TaskSet& taskSet) const;
 };

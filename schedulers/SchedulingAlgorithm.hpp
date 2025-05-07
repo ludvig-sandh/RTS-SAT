@@ -10,5 +10,5 @@ public:
     virtual ~SchedulingAlgorithm() = default;
 
     // Core method each algorithm must implement
-    virtual Schedule GenerateSchedule(TaskSet &taskSet) = 0;
+    virtual Schedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions) = 0;
 };

@@ -22,6 +22,32 @@ bool Schedule::AreDeadlinesMet(bool shouldPrintMiss) {
     return true;
 }
 
+void Schedule::Validate() {
+    const TaskJob *lastJob = nullptr;
+    uint32_t hyperPeriod = m_taskset.GetHyperPeriod();
+
+    if (hyperPeriod == 0) {
+        throw InvalidScheduleException("Validation error: Hyperperiod is invalid (zero).");
+    }
+
+    for (const TaskJob &job : m_scheduledTasks) {
+        if (job.start >= hyperPeriod) {
+            throw InvalidScheduleException("Validation error: An instance of task " + std::to_string(job.taskId) + " has a start time that begins after the hyper period ends.");
+        }
+        if (job.start > job.end) {
+            throw InvalidScheduleException("Validation error: An instance of task " + std::to_string(job.taskId) + " has a start time after its end time.");
+        }
+        if (lastJob && job.end < lastJob->start) {
+            throw InvalidScheduleException("Validation error: Schedule wasn't ordered by time");
+        }
+        if (lastJob && job.start < lastJob->end) {
+            throw InvalidScheduleException("Validation error: Instances of tasks " + std::to_string(job.taskId) + " and " + std::to_string(lastJob->taskId) + " executed at the same time.");
+        }
+
+        lastJob = &job;
+    }
+}
+
 void Schedule::PrintSchedule() {
     std::cout << "Printing schedule" << std::endl;
     for (const TaskJob &job : m_scheduledTasks) {

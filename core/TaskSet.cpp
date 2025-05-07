@@ -49,12 +49,13 @@ std::deque<TaskJob> TaskSet::GetAllTaskJobs() const {
     // For each task, generate all the instances within the hyperperiod
     for (const PeriodicTask &task : m_tasks) {
         uint32_t numInstances = hyperPeriod / task.T;
-        for (uint32_t instanceNumber = 0; instanceNumber < numInstances; instanceNumber++) {
+        for (uint32_t instanceNumber = 1; instanceNumber < numInstances + 1; instanceNumber++) {
             TaskJob instance(
-                instanceNumber * task.T,
-                instanceNumber * task.T + task.D,
+                (instanceNumber - 1) * task.T, // absolute arrival
+                (instanceNumber - 1) * task.T + task.D, // absolute deadline
                 instanceNumber,
-                (uint32_t)task.id
+                (uint32_t)task.id,
+                task.C // remaining time to execute
             );
             instances.push_back(instance);
         }

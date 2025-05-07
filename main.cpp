@@ -27,17 +27,24 @@ TaskSet getTaskSet3() {
 }
 
 int main() {
-    std::cout << "Hello world!\n" << std::endl;
-    
-    RMScheduler alg;
+    // Configure the simulator
+    DMScheduler alg;
     Simulator simulator(&alg);
-    TaskSet taskSet = getTaskSet3();
+    simulator.SetPreemptionsAllowed(true);
+
+    // Create the task set
+    TaskSet taskSet = getTaskSet2();
+
+    // Run the algorithm to get the schedule
     Schedule schedule = simulator.run(taskSet);
+
+    // Check deadlines
     std::cout << "Checking if deadlines are respected..." << std::endl;
     if (schedule.AreDeadlinesMet(true)) {
         std::cout << "No task missed their deadline.\n" << std::endl;
     }
 
+    // Print information about the task priorities and schedule etc...
     taskSet.PrintPriorities();
     schedule.PrintSchedule();
 }
