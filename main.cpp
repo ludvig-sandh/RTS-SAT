@@ -36,12 +36,12 @@ TaskSet getTaskSet4() {
 
 int main() {
     // Configure the simulator
-    EDFScheduler alg;
+    DMScheduler alg;
     Simulator simulator(&alg);
     simulator.SetPreemptionsAllowed(true);
 
     // Create the task set
-    TaskSet taskSet = getTaskSet4();
+    TaskSet taskSet = getTaskSet1();
 
     // Run the algorithm to get the schedule
     Schedule schedule = simulator.run(taskSet);
