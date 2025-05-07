@@ -4,6 +4,7 @@
 #include "Simulator.hpp"
 #include "RMScheduler.hpp"
 #include "DMScheduler.hpp"
+#include "EDFScheduler.hpp"
 
 TaskSet getTaskSet1() {
     std::vector<PeriodicTask> tasks;
@@ -26,14 +27,21 @@ TaskSet getTaskSet3() {
     return TaskSet(tasks);
 }
 
+TaskSet getTaskSet4() {
+    std::vector<PeriodicTask> tasks;
+    tasks.push_back(PeriodicTask(3, 5, 7, 1));
+    tasks.push_back(PeriodicTask(2, 4, 14, 2));
+    return TaskSet(tasks);
+}
+
 int main() {
     // Configure the simulator
-    DMScheduler alg;
+    EDFScheduler alg;
     Simulator simulator(&alg);
     simulator.SetPreemptionsAllowed(true);
 
     // Create the task set
-    TaskSet taskSet = getTaskSet2();
+    TaskSet taskSet = getTaskSet4();
 
     // Run the algorithm to get the schedule
     Schedule schedule = simulator.run(taskSet);
@@ -45,6 +53,6 @@ int main() {
     }
 
     // Print information about the task priorities and schedule etc...
-    taskSet.PrintPriorities();
+    // taskSet.PrintPriorities();
     schedule.PrintSchedule();
 }

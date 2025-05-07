@@ -8,15 +8,7 @@ struct StaticPrioritiesComparator {
     StaticPrioritiesComparator(const TaskSet& ts) : taskSet(ts) {}
 
     // Should return true if b should come before a
-    bool operator()(const TaskJob& a, const TaskJob& b) const {
-        uint32_t prioA = taskSet.GetTask(a.taskId).prio;
-        uint32_t prioB = taskSet.GetTask(b.taskId).prio;
-
-        if (prioA != prioB) {
-            return prioA < prioB; // higher prio value = higher priority
-        }
-        return a.instanceNumber > b.instanceNumber;
-    }
+    bool operator()(const TaskJob& a, const TaskJob& b) const;
 };
 
 class StaticPriorityScheduler : public SchedulingAlgorithm {
