@@ -6,10 +6,12 @@ struct PeriodicTask {
     uint32_t C; // WCET
     uint32_t D; // Deadline
     uint32_t T; // Period
+    uint32_t O; // Offset
     uint32_t id; // Unique identifier for this task
     uint32_t prio; // Higher value <=> higher priority
 
-    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, uint32_t id) : C(C), D(D), T(T), id(id), prio(UINT32_MAX) {};
+    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, uint32_t id) : C(C), D(D), T(T), O(0), id(id), prio(UINT32_MAX) {};
+    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, uint32_t O, uint32_t id) : C(C), D(D), T(T), O(O), id(id), prio(UINT32_MAX) {};
 };
 
 struct TaskJob {

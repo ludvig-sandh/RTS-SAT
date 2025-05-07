@@ -2,8 +2,12 @@
 #include <stdexcept>
 #include "LiuLaylandUtilizationBoundTest.hpp"
 
-bool LiuLaylandUtilizationBoundTest::RunTest(const TaskSet &taskSet) const {
-    uint32_t numTasks = taskSet.GetTasks().size();
+bool LiuLaylandUtilizationBoundTest::IsApplicable(const TaskSet &taskSet) const {
+    return taskSet.IsSynchronous() && taskSet.HasImplicitDeadlines();
+}
+
+bool LiuLaylandUtilizationBoundTest::RunTestImpl(const TaskSet &taskSet) const {
+    uint32_t numTasks = taskSet.GetNumTasks();
     return GetUtilization(taskSet) <= GetUtilizationBound(numTasks);
 }
 

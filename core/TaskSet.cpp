@@ -3,6 +3,13 @@
 #include <iostream>
 #include "TaskSet.hpp"
 
+TaskSet::TaskSet(std::vector<PeriodicTask> tasks) {
+    if (tasks.size() == 0) {
+        throw std::runtime_error("Cannot create a task set out of zero tasks.");
+    }
+    m_tasks = tasks;
+}
+
 const std::vector<PeriodicTask> &TaskSet::GetTasks() const {
     return m_tasks;
 }
@@ -30,8 +37,8 @@ const PeriodicTask &TaskSet::GetTask(uint32_t taskId) const {
     return m_tasks.back();
 }
 
-std::size_t TaskSet::Size() const {
-    return m_tasks.size();
+uint32_t TaskSet::GetNumTasks() const {
+    return static_cast<uint32_t>(m_tasks.size());
 }
 
 uint32_t TaskSet::GetHyperPeriod() const {
@@ -76,4 +83,22 @@ void TaskSet::PrintPriorities() const {
         std::cout << "Task id " << task.id << " has priority " << task.prio << std::endl;
     }
     std::cout << std::endl;
+}
+
+bool TaskSet::IsSynchronous() const {
+    for (uint32_t i = 1; i < GetNumTasks(); i++) {
+        if (m_tasks[i].O != m_tasks[0].O) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool TaskSet::HasImplicitDeadlines() const {
+    for (const PeriodicTask &task : m_tasks) {
+        if (task.D != task.T) {
+            return false;
+        }
+    }
+    return true;
 }

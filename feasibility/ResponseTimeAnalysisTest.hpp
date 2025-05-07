@@ -3,9 +3,8 @@
 #include "FeasibilityTest.hpp"
 
 // Sufficient test
-class LiuLaylandUtilizationBoundTest : public FeasibilityTest {
+class ResponseTimeAnalysisTest : public FeasibilityTest {
 private:
-    bool IsApplicable(const TaskSet &taskSet) const override;
     bool RunTestImpl(const TaskSet &taskSet) const override;
     
     // Utilization bound is n(2^(1/n)-1) for n tasks

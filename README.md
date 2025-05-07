@@ -10,3 +10,4 @@ This project is a real-time task scheduling simulator and analysis tool written 
 - [ ] Compile to a static library
 - [ ] Add sample code that uses library
 - [ ] Schedule visualizer
+- [ ] Support offsets in all schedulers
