@@ -4,5 +4,5 @@
 
 class EDFScheduler : public SchedulingAlgorithm {
 public:
-    Schedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions) override;
+    Schedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay) override;
 };

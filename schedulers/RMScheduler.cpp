@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "RMScheduler.hpp"
 
-void RMScheduler::AssignStaticPriorities(TaskSet& taskSet) {
+void RMScheduler::AssignStaticPriorities(TaskSet& taskSet) const {
     // Get local copy of the tasks in the task set
     std::vector<PeriodicTask> tasks = taskSet.GetCopyOfTasks();
 

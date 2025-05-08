@@ -11,11 +11,11 @@ public:
     virtual ~SchedulingAlgorithm() = default;
 
     // Core method each algorithm must implement
-    virtual Schedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions) = 0;
+    virtual Schedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay = 0) = 0;
 
 protected:
     template <typename Comparator>
-    Schedule GenerateScheduleImpl(TaskSet& taskSet, Comparator priorityComp, bool allowPreemptions) {
+    Schedule GenerateScheduleImpl(TaskSet& taskSet, Comparator priorityComp, bool allowPreemptions, uint32_t preemptionDelay) {
         Schedule schedule(taskSet);
     
         // Get all task instances (sorted by ascending arrival time)
@@ -84,6 +84,9 @@ protected:
     
                 delete runningJob;
                 runningJob = nullptr;
+
+                // Add delay due to preemption overhead
+                currentTime += preemptionDelay;
             }else {
                 throw std::runtime_error("Invalid case in GenerateScheduleImpl...");
             }

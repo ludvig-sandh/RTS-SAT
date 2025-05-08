@@ -11,10 +11,10 @@ bool StaticPrioritiesComparator::operator()(const TaskJob& a, const TaskJob& b) 
     return a.instanceNumber > b.instanceNumber;
 }
 
-Schedule StaticPriorityScheduler::GenerateSchedule(TaskSet &taskSet, bool allowPreemptions) {
+Schedule StaticPriorityScheduler::GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay) {
     // Assign priorities to each task in the set
     AssignStaticPriorities(taskSet);
 
     StaticPrioritiesComparator priorityComparator(taskSet);
-    return GenerateScheduleImpl(taskSet, priorityComparator, allowPreemptions);
+    return GenerateScheduleImpl(taskSet, priorityComparator, allowPreemptions, preemptionDelay);
 }

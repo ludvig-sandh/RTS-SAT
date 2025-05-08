@@ -3,6 +3,6 @@
 #include "StaticPriorityScheduler.hpp"
 
 class DMScheduler : public StaticPriorityScheduler {
-private:
-    void AssignStaticPriorities(TaskSet& taskSet) override;
+public:
+    void AssignStaticPriorities(TaskSet& taskSet) const override;
 };
