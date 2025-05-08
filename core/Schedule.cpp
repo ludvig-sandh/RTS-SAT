@@ -33,9 +33,6 @@ void Schedule::Validate() const {
     }
 
     for (const TaskJob &job : m_scheduledTasks) {
-        if (job.start >= hyperPeriod) {
-            throw InvalidScheduleException("Validation error: An instance of task " + std::to_string(job.taskId) + " has a start time that begins after the hyper period ends.");
-        }
         if (job.start > job.end) {
             throw InvalidScheduleException("Validation error: An instance of task " + std::to_string(job.taskId) + " has a start time after its end time.");
         }
