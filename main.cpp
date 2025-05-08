@@ -150,12 +150,15 @@ int main() {
     RMScheduler alg;
     Simulator simulator(&alg);
     simulator.SetPreemptionsAllowed(true);
-    simulator.SetPreemptionDelay(2);
 
-    // Create the task set
-    TaskSet taskSet = getTaskSet6();
+    // Test taskset generation
+    TaskSetGenerator::Config config;
+    config.minPeriod = 3;
+    config.maxPeriod = 6;
+    config.numTasks = 3;
 
-    // Run the algorithm to get the schedule
+    TaskSetGenerator generator(config);
+    TaskSet taskSet = getTaskSet2();//generator.Generate();
     Schedule schedule = simulator.run(taskSet);
 
     // Check deadlines
@@ -163,30 +166,7 @@ int main() {
     if (schedule.AreDeadlinesMet(true)) {
         std::cout << "No task missed their deadline.\n" << std::endl;
     }
-
-    // Print information about the task priorities and schedule etc...
-    // taskSet.PrintPriorities();
+    
     schedule.PrintSchedule();
-
-    // Test taskset generation
-    TaskSetGenerator::Config config;
-    config.minPeriod = 3;
-    config.maxPeriod = 10;
-    config.numTasks = 5;
-
-    TaskSetGenerator generator(config);
-    taskSet = generator.Generate();
-    schedule = simulator.run(taskSet);
     schedule.ExportToCsv();
-
-    // TaskSet taskSet = getTaskSet7();
-    // test(taskSet);
-
-    // for (uint32_t i = 0; i < 10; i++) {
-    //     TaskSet taskSet = generator.Generate();
-
-    //     test(taskSet);
-    // }
-
-    // std::cout << "SUCCESS!!!" << std::endl;
 }

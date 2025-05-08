@@ -64,7 +64,7 @@ void Schedule::PrintSchedule() const {
 
 void Schedule::ExportToCsv(const std::string& filename) const {
     std::ofstream file(filename);
-    file << "arrival,deadline,instanceNumber,taskId,remainingTime,start,end,priority\n";
+    file << "arrival,deadline,instanceNumber,taskId,remainingTime,start,end,priority,executionTime\n";
     for (const TaskJob &job : m_scheduledTasks) {
         file << std::to_string(job.arrival) << ",";
         file << std::to_string(job.deadline) << ",";
@@ -73,7 +73,8 @@ void Schedule::ExportToCsv(const std::string& filename) const {
         file << std::to_string(job.remainingTime) << ",";
         file << std::to_string(job.start) << ",";
         file << std::to_string(job.end) << ",";
-        file << std::to_string(m_taskset.GetTask(job.taskId).prio) << "\n";
+        file << std::to_string(m_taskset.GetTask(job.taskId).prio) << ",";
+        file << std::to_string(m_taskset.GetTask(job.taskId).C) << "\n";
     }
     file.close();
     std::cout << "Wrote schedule to " << filename << "\n";
