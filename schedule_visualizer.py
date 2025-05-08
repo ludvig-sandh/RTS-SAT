@@ -206,20 +206,15 @@ if __name__ == "__main__":
     periods = list(set(j.period for j in jobs))
     hyper_period = compute_hyper_period(periods)
 
+    clock = pygame.time.Clock()
+
     while True:
         display_schedule(screen, jobs, task_priority_to_id, hyper_period)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:
-                    scale *= 0.96
-                elif event.button == 5:
-                    scale *= 1.04
 
         keys = pygame.key.get_pressed()  #checking pressed keys
-        if keys[pygame.K_d]:
-            offset += 0.01
-        if keys[pygame.K_a]:
-            offset -= 0.01
+
+        clock.tick(1)
