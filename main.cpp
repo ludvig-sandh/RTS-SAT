@@ -58,6 +58,13 @@ TaskSet getTaskSet7() {
     return TaskSet(tasks);
 }
 
+TaskSet getTaskSet8() {
+    std::vector<PeriodicTask> tasks;
+    tasks.push_back(PeriodicTask(2, 5, 5, 2, 1));
+    tasks.push_back(PeriodicTask(2, 6, 6, 3, 2));
+    return TaskSet(tasks);
+}
+
 bool testX(TaskSet &taskSet, uint32_t x) {
     PeriodicTask t1 = taskSet.GetTask(1);
     PeriodicTask t2 = taskSet.GetTask(2);
@@ -155,10 +162,11 @@ int main() {
     TaskSetGenerator::Config config;
     config.minPeriod = 3;
     config.maxPeriod = 6;
-    config.numTasks = 3;
+    config.numTasks = 4;
 
     TaskSetGenerator generator(config);
-    TaskSet taskSet = getTaskSet2();//generator.Generate();
+    TaskSet taskSet = generator.Generate();
+    taskSet = getTaskSet7();
     Schedule schedule = simulator.run(taskSet);
 
     // Check deadlines

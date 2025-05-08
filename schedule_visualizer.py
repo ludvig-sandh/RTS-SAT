@@ -15,6 +15,7 @@ class Task:
     priority: int
     executionTime: int
     period: int
+    offset: int
 
 def read_jobs_from_csv(file_path: str) -> list[Task]:
     tasks = []
@@ -31,7 +32,8 @@ def read_jobs_from_csv(file_path: str) -> list[Task]:
                 end=int(row['end']),
                 priority=int(row['priority']),
                 executionTime=int(row['executionTime']),
-                period=int(row['period'])
+                period=int(row['period']),
+                offset=int(row['offset'])
             )
             tasks.append(task)
     return tasks
@@ -101,6 +103,10 @@ def draw_arrow(
 def display_schedule(screen, jobs, task_priority_to_id, hyper_period):
     num_tasks = len(task_priority_to_id)
 
+    offsets = {}
+    for job in jobs:
+        offsets[job.taskId] = job.offset
+
     # pygame stuff
     screen.fill((230, 230, 230))
     fill_color = (0, 0, 0)
@@ -117,7 +123,7 @@ def display_schedule(screen, jobs, task_priority_to_id, hyper_period):
     makespan = 0
     for job in jobs:
         makespan = max(makespan, job.end)
-    makespan = max(makespan, hyper_period)
+    makespan = max(makespan, hyper_period + max(offsets.values()))
 
     for i in range(makespan + 1):
         textsurface = myfont.render(str(i), False, fill_color)
@@ -128,10 +134,11 @@ def display_schedule(screen, jobs, task_priority_to_id, hyper_period):
     pygame.draw.line(screen, fill_color, (left_border, top_border), (left_border, bottom_border), 2)
     pygame.draw.line(screen, fill_color, (left_border, bottom_border), (right_border, bottom_border), 2)
     for i in range(num_tasks):
-        textsurface = myfont.render("Task " + str(task_priority_to_id[num_tasks - i - 1]), False, fill_color)
-        screen.blit(textsurface, (20, task_ys[i]))
-        hyper_period_x = mp(hyper_period, 0, makespan, left_border, right_border)
-        draw_arrow(screen, pygame.Vector2(hyper_period_x, task_ys[i] + task_height), pygame.Vector2(hyper_period_x, task_ys[i] - task_height * 0.25), (150, 150, 150), head_width=task_height / 3, head_height=task_height / 3)
+        taskId = task_priority_to_id[num_tasks - i - 1]
+        textsurface = myfont.render("Task " + str(taskId), False, fill_color)
+        screen.blit(textsurface, (20, task_ys[num_tasks - i - 1]))
+        next_hyper_period_x = mp(hyper_period + offsets[taskId], 0, makespan, left_border, right_border)
+        draw_arrow(screen, pygame.Vector2(next_hyper_period_x, task_ys[num_tasks - i - 1] + task_height), pygame.Vector2(next_hyper_period_x, task_ys[num_tasks - i - 1] - task_height * 0.25), (150, 150, 150), head_width=task_height / 3, head_height=task_height / 3)
 
     seen_instance_numbers = {task_id: set() for task_id in task_priority_to_id.values()}
     for job in jobs:

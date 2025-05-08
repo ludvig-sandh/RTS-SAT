@@ -10,5 +10,5 @@ This project is a real-time task scheduling simulator and analysis tool written 
 - [ ] Unit tests
 - [ ] Compile to a static library
 - [ ] Add sample code that uses library
-- [ ] Schedule visualizer
-- [ ] Support offsets in all schedulers
+- [X] Schedule visualizer
+- [X] Support offsets in all schedulers

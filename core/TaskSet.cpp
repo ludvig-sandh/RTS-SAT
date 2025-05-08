@@ -68,8 +68,8 @@ std::deque<TaskJob> TaskSet::GetAllTaskJobs() const {
         uint32_t numInstances = hyperPeriod / task.T;
         for (uint32_t instanceNumber = 1; instanceNumber < numInstances + 1; instanceNumber++) {
             TaskJob instance(
-                (instanceNumber - 1) * task.T, // absolute arrival
-                (instanceNumber - 1) * task.T + task.D, // absolute deadline
+                task.O + (instanceNumber - 1) * task.T, // absolute arrival
+                task.O + (instanceNumber - 1) * task.T + task.D, // absolute deadline
                 instanceNumber,
                 (uint32_t)task.id,
                 task.C // remaining time to execute
@@ -95,7 +95,7 @@ std::unordered_set<uint32_t> TaskSet::GetAbsoluteDeadlines() const {
     for (const PeriodicTask &task : m_tasks) {
         uint32_t numInstances = hyperPeriod / task.T;
         for (uint32_t instanceNumber = 1; instanceNumber < numInstances + 1; instanceNumber++) {
-            deadlines.insert((instanceNumber - 1) * task.T + task.D); // absolute deadline
+            deadlines.insert(task.O + (instanceNumber - 1) * task.T + task.D); // absolute deadline
         }
     }
 
