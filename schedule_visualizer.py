@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import pygame
 import csv
+from math import lcm
 
 @dataclass
 class Task:
@@ -13,6 +14,7 @@ class Task:
     end: int
     priority: int
     executionTime: int
+    period: int
 
 def read_jobs_from_csv(file_path: str) -> list[Task]:
     tasks = []
@@ -28,7 +30,8 @@ def read_jobs_from_csv(file_path: str) -> list[Task]:
                 start=int(row['start']),
                 end=int(row['end']),
                 priority=int(row['priority']),
-                executionTime=int(row['executionTime'])
+                executionTime=int(row['executionTime']),
+                period=int(row['period'])
             )
             tasks.append(task)
     return tasks
@@ -95,7 +98,7 @@ def draw_arrow(
 
         pygame.draw.polygon(surface, color, body_verts)
 
-def display_schedule(screen, jobs, task_priority_to_id):
+def display_schedule(screen, jobs, task_priority_to_id, hyper_period):
     num_tasks = len(task_priority_to_id)
 
     # pygame stuff
@@ -113,7 +116,8 @@ def display_schedule(screen, jobs, task_priority_to_id):
 
     makespan = 0
     for job in jobs:
-        makespan = max(makespan, job.deadline)
+        makespan = max(makespan, job.end)
+    makespan = max(makespan, hyper_period)
 
     for i in range(makespan + 1):
         textsurface = myfont.render(str(i), False, fill_color)
@@ -126,6 +130,7 @@ def display_schedule(screen, jobs, task_priority_to_id):
     for i in range(num_tasks):
         textsurface = myfont.render("Task " + str(task_priority_to_id[num_tasks - i - 1]), False, fill_color)
         screen.blit(textsurface, (20, task_ys[i]))
+        draw_arrow(screen, pygame.Vector2(right_border, task_ys[i] + task_height), pygame.Vector2(right_border, task_ys[i] - task_height * 0.25), (150, 150, 150), head_width=task_height / 3, head_height=task_height / 3)
 
     seen_instance_numbers = {task_id: set() for task_id in task_priority_to_id.values()}
     for job in jobs:
@@ -174,6 +179,9 @@ def display_schedule(screen, jobs, task_priority_to_id):
 
     pygame.display.flip()
 
+def compute_hyper_period(periods):
+    return lcm(*periods)
+
 if __name__ == "__main__":
     file_path = "schedule.csv"  # Replace with your actual file path
     jobs = read_jobs_from_csv(file_path)
@@ -187,8 +195,11 @@ if __name__ == "__main__":
     myfont = pygame.font.SysFont('Comic Sans MS', 30)
     screen = pygame.display.set_mode([WIDTH, HEIGHT])
 
+    periods = list(set(j.period for j in jobs))
+    hyper_period = compute_hyper_period(periods)
+
     while True:
-        display_schedule(screen, jobs, task_priority_to_id)
+        display_schedule(screen, jobs, task_priority_to_id, hyper_period)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
