@@ -130,7 +130,8 @@ def display_schedule(screen, jobs, task_priority_to_id, hyper_period):
     for i in range(num_tasks):
         textsurface = myfont.render("Task " + str(task_priority_to_id[num_tasks - i - 1]), False, fill_color)
         screen.blit(textsurface, (20, task_ys[i]))
-        draw_arrow(screen, pygame.Vector2(right_border, task_ys[i] + task_height), pygame.Vector2(right_border, task_ys[i] - task_height * 0.25), (150, 150, 150), head_width=task_height / 3, head_height=task_height / 3)
+        hyper_period_x = mp(hyper_period, 0, makespan, left_border, right_border)
+        draw_arrow(screen, pygame.Vector2(hyper_period_x, task_ys[i] + task_height), pygame.Vector2(hyper_period_x, task_ys[i] - task_height * 0.25), (150, 150, 150), head_width=task_height / 3, head_height=task_height / 3)
 
     seen_instance_numbers = {task_id: set() for task_id in task_priority_to_id.values()}
     for job in jobs:
