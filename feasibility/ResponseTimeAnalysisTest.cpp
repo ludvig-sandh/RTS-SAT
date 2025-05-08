@@ -2,6 +2,12 @@
 #include "ResponseTimeAnalysisTest.hpp"
 
 bool ResponseTimeAnalysisTest::IsApplicable(const TaskSet &taskSet) const {
+    for (const PeriodicTask &task : taskSet.GetTasks()) {
+        if (task.prio == UINT32_MAX) {
+            // Unnassigned priority. RTA assumes static priorities have been assigned.
+            return false;
+        }
+    }
     return taskSet.IsSynchronous() && taskSet.HasConstrainedDeadlines();
 }
 
@@ -23,7 +29,7 @@ uint32_t ResponseTimeAnalysisTest::ComputeResponseTime(const TaskSet &taskSet, c
     uint32_t lastEstimatedResponseTime = UINT32_MAX; // Placeholder value
 
     // Run iterative process until convergence
-    while (estimatedResponseTime != lastEstimatedResponseTime) {
+    while (estimatedResponseTime != lastEstimatedResponseTime && estimatedResponseTime <= task.D) {
         lastEstimatedResponseTime = estimatedResponseTime;
 
         // Update the estimation
