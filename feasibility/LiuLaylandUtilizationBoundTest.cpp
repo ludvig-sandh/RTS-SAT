@@ -2,8 +2,14 @@
 #include <stdexcept>
 #include "LiuLaylandUtilizationBoundTest.hpp"
 
-bool LiuLaylandUtilizationBoundTest::IsApplicable(const TaskSet &taskSet) const {
-    return taskSet.IsSynchronous() && taskSet.HasImplicitDeadlines();
+void LiuLaylandUtilizationBoundTest::CheckApplicability(const TaskSet &taskSet) const {
+    if (!taskSet.IsSynchronous()) {
+        throw InvalidFeasibilityTestException::CreateNonSynchronousException();
+    }
+
+    if (!taskSet.HasImplicitDeadlines()) {
+        throw InvalidFeasibilityTestException::CreateNonImplicitDeadlinesException();
+    }
 }
 
 bool LiuLaylandUtilizationBoundTest::RunTestImpl(const TaskSet &taskSet) const {

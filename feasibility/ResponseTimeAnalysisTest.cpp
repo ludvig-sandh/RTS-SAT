@@ -1,14 +1,21 @@
 #include <cmath>
 #include "ResponseTimeAnalysisTest.hpp"
 
-bool ResponseTimeAnalysisTest::IsApplicable(const TaskSet &taskSet) const {
+void ResponseTimeAnalysisTest::CheckApplicability(const TaskSet &taskSet) const {
     for (const PeriodicTask &task : taskSet.GetTasks()) {
         if (task.prio == UINT32_MAX) {
             // Unnassigned priority. RTA assumes static priorities have been assigned.
-            return false;
+            throw InvalidFeasibilityTestException("Feasibility test is not applicable to the given task set, because static priorities have not been set.");
         }
     }
-    return taskSet.IsSynchronous() && taskSet.HasConstrainedDeadlines();
+    
+    if (!taskSet.IsSynchronous()) {
+        throw InvalidFeasibilityTestException::CreateNonSynchronousException();
+    }
+
+    if (!taskSet.HasConstrainedDeadlines()) {
+        throw InvalidFeasibilityTestException::CreateNonConstrainedDeadlinesException();
+    }
 }
 
 bool ResponseTimeAnalysisTest::RunTestImpl(const TaskSet &taskSet) const {

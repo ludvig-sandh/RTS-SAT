@@ -1,8 +1,14 @@
 #include <cmath>
 #include "EDFProcessorDemandTest.hpp"
 
-bool EDFProcessorDemandTest::IsApplicable(const TaskSet &taskSet) const {
-    return taskSet.IsSynchronous() && taskSet.HasConstrainedDeadlines();
+void EDFProcessorDemandTest::CheckApplicability(const TaskSet &taskSet) const {
+    if (!taskSet.IsSynchronous()) {
+        throw InvalidFeasibilityTestException::CreateNonSynchronousException();
+    }
+
+    if (!taskSet.HasConstrainedDeadlines()) {
+        throw InvalidFeasibilityTestException::CreateNonConstrainedDeadlinesException();
+    }
 }
 
 bool EDFProcessorDemandTest::RunTestImpl(const TaskSet &taskSet) const {

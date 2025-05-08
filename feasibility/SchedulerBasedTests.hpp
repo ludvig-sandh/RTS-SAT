@@ -11,7 +11,7 @@ private:
     bool m_allowPreemptions = true;
     uint32_t m_preemptionDelay = 0;
 
-    bool IsApplicable(const TaskSet &taskSet) const override;
+    void CheckApplicability(const TaskSet &taskSet) const override;
     bool RunTestImpl(const TaskSet &taskSet) const override;
 
     virtual std::unique_ptr<SchedulingAlgorithm> GetScheduler() const = 0;

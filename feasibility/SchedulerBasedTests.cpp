@@ -4,9 +4,8 @@
 #include "EDFScheduler.hpp"
 #include "Simulator.hpp"
 
-bool SchedulerBasedTest::IsApplicable(const TaskSet &taskSet) const {
+void SchedulerBasedTest::CheckApplicability(const TaskSet &taskSet) const {
     (void)taskSet;
-    return true;
 }
 
 bool SchedulerBasedTest::RunTestImpl(const TaskSet &taskSet) const {
