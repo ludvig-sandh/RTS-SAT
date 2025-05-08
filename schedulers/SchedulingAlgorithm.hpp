@@ -29,7 +29,7 @@ protected:
         TaskJob *runningJob = nullptr;
     
         // Main simulation loop
-        while (pendingJobs.size() || readyQueue.size()) {
+        while (pendingJobs.size() || readyQueue.size() || runningJob) {
             // Add any tasks that have arrived up until now to the ready queue.
             while (pendingJobs.size() && pendingJobs.front().arrival <= currentTime) {
                 readyQueue.push(pendingJobs.front());
