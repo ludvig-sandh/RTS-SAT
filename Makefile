@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Icore -Ischedulers -Isim
+CXXFLAGS := -std=c++17 -Wall -Wextra -Icore -Ischedulers -Isim -Ifeasibility -Igenerator
 
 # Output folder
 BUILD_DIR := build
@@ -11,6 +11,7 @@ SRCS := $(wildcard core/*.cpp) \
         $(wildcard schedulers/*.cpp) \
         $(wildcard sim/*.cpp) \
         $(wildcard feasibility/*.cpp) \
+        $(wildcard generator/*.cpp) \
         main.cpp
 
 # Object files (build/foo.o for foo.cpp)

@@ -110,6 +110,14 @@ void TaskSet::PrintPriorities() const {
     std::cout << std::endl;
 }
 
+void TaskSet::Print() const {
+    std::cout << "Printing task set" << std::endl;
+    for (const PeriodicTask &task : m_tasks) {
+        std::cout << "Task id " << task.id << ", C=" << task.C << ", D=" << task.D << ", T=" << task.T << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 bool TaskSet::IsSynchronous() const {
     for (uint32_t i = 1; i < GetNumTasks(); i++) {
         if (m_tasks[i].O != m_tasks[0].O) {

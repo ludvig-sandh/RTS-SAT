@@ -5,6 +5,8 @@
 #include "RMScheduler.hpp"
 #include "DMScheduler.hpp"
 #include "EDFScheduler.hpp"
+#include "TaskSetGenerator.hpp"
+#include "SchedulerBasedTests.hpp"
 
 TaskSet getTaskSet1() {
     std::vector<PeriodicTask> tasks;
@@ -55,4 +57,20 @@ int main() {
     // Print information about the task priorities and schedule etc...
     // taskSet.PrintPriorities();
     schedule.PrintSchedule();
+
+    // Test taskset generation
+    TaskSetGenerator::Config config;
+    config.numTasks = 2;
+
+    TaskSetGenerator generator(config);
+
+    for (uint32_t i = 0; i < 1000; i++) {
+        taskSet = generator.Generate();
+
+        // Check if it is schedulable
+        RMSchedulabilityTest rmTest;
+        bool schedulable = rmTest.RunTest(taskSet);
+
+
+    }
 }

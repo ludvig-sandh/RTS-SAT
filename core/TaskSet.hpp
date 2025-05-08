@@ -34,6 +34,7 @@ public:
     std::unordered_set<uint32_t> GetAbsoluteDeadlines() const;
 
     void PrintPriorities() const;
+    void Print() const;
 
     // A task set is synchronous if and only if all tasks have the same offsets.
     bool IsSynchronous() const;
