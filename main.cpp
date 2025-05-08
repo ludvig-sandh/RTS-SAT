@@ -147,43 +147,46 @@ void test(TaskSet &taskSet) {
 
 int main() {
     // Configure the simulator
-    // RMScheduler alg;
-    // Simulator simulator(&alg);
-    // simulator.SetPreemptionsAllowed(true);
-    // simulator.SetPreemptionDelay(2);
+    RMScheduler alg;
+    Simulator simulator(&alg);
+    simulator.SetPreemptionsAllowed(true);
+    simulator.SetPreemptionDelay(2);
 
-    // // Create the task set
-    // TaskSet taskSet = getTaskSet6();
+    // Create the task set
+    TaskSet taskSet = getTaskSet6();
 
-    // // Run the algorithm to get the schedule
-    // Schedule schedule = simulator.run(taskSet);
+    // Run the algorithm to get the schedule
+    Schedule schedule = simulator.run(taskSet);
 
-    // // Check deadlines
-    // std::cout << "Checking if deadlines are respected..." << std::endl;
-    // if (schedule.AreDeadlinesMet(true)) {
-    //     std::cout << "No task missed their deadline.\n" << std::endl;
-    // }
+    // Check deadlines
+    std::cout << "Checking if deadlines are respected..." << std::endl;
+    if (schedule.AreDeadlinesMet(true)) {
+        std::cout << "No task missed their deadline.\n" << std::endl;
+    }
 
-    // // Print information about the task priorities and schedule etc...
-    // // taskSet.PrintPriorities();
-    // schedule.PrintSchedule();
+    // Print information about the task priorities and schedule etc...
+    // taskSet.PrintPriorities();
+    schedule.PrintSchedule();
 
     // Test taskset generation
     TaskSetGenerator::Config config;
     config.minPeriod = 3;
     config.maxPeriod = 10;
-    config.numTasks = 2;
+    config.numTasks = 5;
 
     TaskSetGenerator generator(config);
+    taskSet = generator.Generate();
+    schedule = simulator.run(taskSet);
+    schedule.ExportToCsv();
 
     // TaskSet taskSet = getTaskSet7();
     // test(taskSet);
 
-    for (uint32_t i = 0; i < 10; i++) {
-        TaskSet taskSet = generator.Generate();
+    // for (uint32_t i = 0; i < 10; i++) {
+    //     TaskSet taskSet = generator.Generate();
 
-        test(taskSet);
-    }
+    //     test(taskSet);
+    // }
 
-    std::cout << "SUCCESS!!!" << std::endl;
+    // std::cout << "SUCCESS!!!" << std::endl;
 }

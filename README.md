@@ -5,8 +5,8 @@ This project is a real-time task scheduling simulator and analysis tool written 
 ## Todo list
 - [X] Preemptive EDF scheduling
 - [X] Feasibility tests
-- [ ] Custom feasibility errors
-- [ ] Random task set generator
+- [X] Custom feasibility errors
+- [X] Random task set generator
 - [ ] Unit tests
 - [ ] Compile to a static library
 - [ ] Add sample code that uses library

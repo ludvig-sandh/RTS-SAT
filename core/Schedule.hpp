@@ -17,8 +17,9 @@ public:
     bool AreDeadlinesMet(bool shouldPrintMiss);
 
     // Checks that the schedule is valid (i.e. no two tasks running simultaneously etc.)
-    void Validate();
-    void PrintSchedule();
+    void Validate() const;
+    void PrintSchedule() const;
+    void ExportToCsv(const std::string& filename = "schedule.csv") const;
 };
 
 class InvalidScheduleException : public std::exception {

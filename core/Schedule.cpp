@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "Schedule.hpp"
 #include "Task.hpp"
 
@@ -22,7 +24,7 @@ bool Schedule::AreDeadlinesMet(bool shouldPrintMiss) {
     return true;
 }
 
-void Schedule::Validate() {
+void Schedule::Validate() const {
     const TaskJob *lastJob = nullptr;
     uint32_t hyperPeriod = m_taskset.GetHyperPeriod();
 
@@ -48,7 +50,7 @@ void Schedule::Validate() {
     }
 }
 
-void Schedule::PrintSchedule() {
+void Schedule::PrintSchedule() const {
     std::cout << "Printing schedule" << std::endl;
     for (const TaskJob &job : m_scheduledTasks) {
         std::cout << "Task " << job.taskId << " scheduled from " << job.start << " to " << job.end << " (instance " << job.instanceNumber << ")";
@@ -58,4 +60,21 @@ void Schedule::PrintSchedule() {
         std::cout << std::endl;
     }
     std::cout << std::endl;
+}
+
+void Schedule::ExportToCsv(const std::string& filename) const {
+    std::ofstream file(filename);
+    file << "arrival,deadline,instanceNumber,taskId,remainingTime,start,end,priority\n";
+    for (const TaskJob &job : m_scheduledTasks) {
+        file << std::to_string(job.arrival) << ",";
+        file << std::to_string(job.deadline) << ",";
+        file << std::to_string(job.instanceNumber) << ",";
+        file << std::to_string(job.taskId) << ",";
+        file << std::to_string(job.remainingTime) << ",";
+        file << std::to_string(job.start) << ",";
+        file << std::to_string(job.end) << ",";
+        file << std::to_string(m_taskset.GetTask(job.taskId).prio) << "\n";
+    }
+    file.close();
+    std::cout << "Wrote schedule to " << filename << "\n";
 }
