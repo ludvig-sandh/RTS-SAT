@@ -1,4 +1,4 @@
-# RTA-SAT (Real-Time System Schedulability Analysis Tool)
+# RTS-SAT (Real-Time System Schedulability Analysis Tool)
 
 This project is a real-time task scheduling simulator and analysis tool written in C++.
 
