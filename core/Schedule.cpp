@@ -47,7 +47,7 @@ void Schedule::Validate() const {
     }
 }
 
-void Schedule::PrintSchedule() const {
+void Schedule::Print() const {
     std::cout << "Printing schedule" << std::endl;
     for (const TaskJob &job : m_scheduledTasks) {
         std::cout << "Task " << job.taskId << " scheduled from " << job.start << " to " << job.end << " (instance " << job.instanceNumber << ")";

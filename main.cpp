@@ -1,5 +1,6 @@
 #include <iostream>
 #include <numeric>
+#include <string>
 
 #include "Simulator.hpp"
 #include "RMScheduler.hpp"
@@ -8,173 +9,96 @@
 #include "TaskSetGenerator.hpp"
 #include "SchedulerBasedTests.hpp"
 #include "ResponseTimeAnalysisTest.hpp"
+#include "LiuLaylandUtilizationBoundTest.hpp"
 
-TaskSet getTaskSet1() {
-    std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(2, 3, 5, 1));
-    tasks.push_back(PeriodicTask(5, 10, 10, 2));
-    return TaskSet(tasks);
-}
-
-TaskSet getTaskSet2() {
-    std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(1, 3, 5, 1));
-    tasks.push_back(PeriodicTask(5, 6, 10, 2));
-    return TaskSet(tasks);
-}
-
-TaskSet getTaskSet3() {
-    std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(1, 2, 10, 1));
-    tasks.push_back(PeriodicTask(2, 4, 5, 2));
-    return TaskSet(tasks);
-}
-
-TaskSet getTaskSet4() {
-    std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(3, 5, 7, 1));
-    tasks.push_back(PeriodicTask(2, 4, 14, 2));
-    return TaskSet(tasks);
-}
-
-TaskSet getTaskSet5() {
-    std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(2, 3, 3, 1));
-    tasks.push_back(PeriodicTask(2, 5, 5, 2));
-    return TaskSet(tasks);
-}
-
-TaskSet getTaskSet6() {
-    std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(1, 4, 4, 1));
-    tasks.push_back(PeriodicTask(4, 8, 8, 2));
-    return TaskSet(tasks);
-}
-
-TaskSet getTaskSet7() {
+// Returns a sample task set
+TaskSet getSampleTaskSet1() {
     std::vector<PeriodicTask> tasks;
     tasks.push_back(PeriodicTask(2, 5, 5, 1));
-    tasks.push_back(PeriodicTask(2, 6, 6, 2));
+    tasks.push_back(PeriodicTask(3, 10, 10, 2));
     return TaskSet(tasks);
 }
 
-TaskSet getTaskSet8() {
-    std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(2, 5, 5, 2, 1));
-    tasks.push_back(PeriodicTask(2, 6, 6, 3, 2));
-    return TaskSet(tasks);
-}
+// Schedules the sample task set with RM
+void example1() {
+    // Let's select RM
+    RMScheduler scheduler;
 
-bool testX(TaskSet &taskSet, uint32_t x) {
-    PeriodicTask t1 = taskSet.GetTask(1);
-    PeriodicTask t2 = taskSet.GetTask(2);
-    if (t1.T > t2.T) {
-        std::swap(t1, t2);
-    }
-    if (t1.T > t2.T) {
-        exit(1);
-    }
-
-    // Response time of task 1
-    if (t1.C > t1.D) {
-        return false;
-    }
-
-    // Response time of task 2
-    uint32_t estimatedResponseTime = t2.C;
-    uint32_t lastEstimatedResponseTime = UINT32_MAX; // Placeholder value
-
-    // Run iterative process until convergence
-    while (estimatedResponseTime != lastEstimatedResponseTime && estimatedResponseTime <= t2.D) {
-        lastEstimatedResponseTime = estimatedResponseTime;
-
-        // Update the estimation
-        // estimatedResponseTime = t2.C + ceil(static_cast<double>(lastEstimatedResponseTime) / t1.T) * (t1.C + x) - x;
-        estimatedResponseTime = t2.C + ceil(static_cast<double>(lastEstimatedResponseTime) / t1.T) * (t1.C + x);
-    }
-    std::cout << "estimated response time: " << estimatedResponseTime << std::endl;
-
-    return estimatedResponseTime <= t2.D;
-}
-
-void testRTA(TaskSet &taskSet) {
-    // Check that our testX function and the sheduler based test always agree on schedulability
-    bool schedulableResult = RMSchedulabilityTest(true).RunTest(taskSet);
-
-    RMScheduler rm;
-    rm.AssignStaticPriorities(taskSet);
-    bool rtaResult = ResponseTimeAnalysisTest().RunTest(taskSet);
-
-    if (schedulableResult != rtaResult) {
-        std::cout << "THE FOLLOWING TASKSET FAILED" << std::endl;
-        std::cout << "SCHEDULABLE RESULT: " << schedulableResult << ", OUR RESULT: " << rtaResult << std::endl;
-        taskSet.Print();
-
-        Simulator simulator(&rm); // Pass raw pointer since simulator doesn't take ownership.
-        simulator.SetPreemptionsAllowed(true);
-
-        Schedule schedule = simulator.run(taskSet);
-        schedule.PrintSchedule();
-
-        exit(0);
-    }
-
-    if (!schedulableResult) {
-        return;
-    }
-}
-
-void test(TaskSet &taskSet) {
-    // Check that our testX function and the sheduler based test always agree on schedulability
-    for (uint32_t x = 0; x < 100; x++) {
-        bool schedulableResult = RMSchedulabilityTest(true, x).RunTest(taskSet);
-        bool ourResult = testX(taskSet, x);
-
-        if (schedulableResult != ourResult) {
-            std::cout << "THE FOLLOWING TASKSET FAILED WITH x=" << x << std::endl;
-            std::cout << "SCHEDULABLE RESULT: " << schedulableResult << ", OUR RESULT: " << ourResult << std::endl;
-            taskSet.Print();
-
-            RMScheduler alg;
-            Simulator simulator(&alg); // Pass raw pointer since simulator doesn't take ownership.
-            simulator.SetPreemptionsAllowed(true);
-            simulator.SetPreemptionDelay(x);
-
-            Schedule schedule = simulator.run(taskSet);
-            schedule.PrintSchedule();
-
-            exit(0);
-        }
-
-        if (!schedulableResult) {
-            return;
-        }
-    }
-}
-
-int main() {
     // Configure the simulator
-    RMScheduler alg;
-    Simulator simulator(&alg);
+    Simulator simulator(&scheduler);
     simulator.SetPreemptionsAllowed(true);
 
-    // Test taskset generation
+    // Select a task set
+    TaskSet taskSet = getSampleTaskSet1();
+    taskSet.Print(); // Display task set in the terminal
+
+    // Get the schedule by running the simulator
+    Schedule schedule = simulator.run(taskSet);
+    
+    // Print the scheduled jobs in the terminal
+    schedule.Print();
+
+    // Check deadlines
+    if (schedule.AreDeadlinesMet(true)) { // Since we send true here, this function will print any missed tasks
+        std::cout << "No task missed their deadline.\n" << std::endl;
+    }
+
+    // Export schedule to csv file (so the python script can visualize it)
+    schedule.ExportToCsv();
+}
+
+// Schedules a randomized task set with DM
+void example2() {
+    // Let's select DM
+    DMScheduler scheduler;
+
+    // Configure the simulator
+    Simulator simulator(&scheduler);
+    simulator.SetPreemptionsAllowed(true);
+    
+    // Create a configuration for the task set generator
     TaskSetGenerator::Config config;
     config.minPeriod = 3;
     config.maxPeriod = 6;
     config.numTasks = 4;
-
+    
+    // Use the config to generate a random task set
     TaskSetGenerator generator(config);
     TaskSet taskSet = generator.Generate();
-    taskSet = getTaskSet7();
-    Schedule schedule = simulator.run(taskSet);
 
+    // Get the schedule by running the simulator
+    Schedule schedule = simulator.run(taskSet);
+    
     // Check deadlines
     std::cout << "Checking if deadlines are respected..." << std::endl;
     if (schedule.AreDeadlinesMet(true)) {
         std::cout << "No task missed their deadline.\n" << std::endl;
     }
     
-    schedule.PrintSchedule();
+    // Print the scheduled jobs in the terminal, and export them to a csv file (so the python script can visualize it)
+    schedule.Print();
     schedule.ExportToCsv();
+}
+
+// Runs a Liu & Layland's feasibility test on the sample task set 
+void example3() {
+    // Get task set
+    TaskSet taskSet = getSampleTaskSet1();
+
+    // Display the task set in the terminal, as well as its utilization
+    taskSet.Print(); 
+    std::cout << "The task set has utilization U=" << taskSet.GetUtilization() << std::endl;
+
+    // Create the feasibility test and run it on the task set
+    LiuLaylandUtilizationBoundTest feasibilityTest;
+    bool didSucceed = feasibilityTest.RunTest(taskSet);
+
+    std::string resultString = didSucceed ? "succeeded" : "failed";
+    std::cout << "Liu & Layland's utilization bound test " << resultString << std::endl;
+}
+
+int main() {
+    example1();
+    // example2();
+    // example3();
 }

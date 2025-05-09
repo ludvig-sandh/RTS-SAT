@@ -18,7 +18,7 @@ public:
 
     // Checks that the schedule is valid (i.e. no two tasks running simultaneously etc.)
     void Validate() const;
-    void PrintSchedule() const;
+    void Print() const;
     void ExportToCsv(const std::string& filename = "schedule.csv") const;
 };
 
