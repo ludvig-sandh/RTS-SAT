@@ -8,7 +8,7 @@ public:
     virtual ~FeasibilityTest() = default;
 
     // Template method: final to prevent override
-    virtual bool RunTest(const TaskSet& taskSet) final;
+    bool RunTest(const TaskSet& taskSet);
 
 protected:
     // Checks if this feasibility test is applicable to the given task set, and throws an exception otherwise
