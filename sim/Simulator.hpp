@@ -1,15 +1,15 @@
 #pragma once
 
-#include "SchedulingAlgorithm.hpp"
+#include "UniprocessorSchedulingAlgorithm.hpp"
 #include "UniprocessorSchedule.hpp"
 
 class Simulator {
-    SchedulingAlgorithm* m_algorithm;
+    UniprocessorSchedulingAlgorithm* m_algorithm;
     bool m_isPreemptionsAllowed = true;
     uint32_t m_preemptionDelay = 0;
 
 public:
-    Simulator(SchedulingAlgorithm* algo) : m_algorithm(algo) {}
+    Simulator(UniprocessorSchedulingAlgorithm* algo) : m_algorithm(algo) {}
 
     void SetPreemptionsAllowed(bool isAllowed);
     void SetPreemptionDelay(uint32_t preemptionDelay);

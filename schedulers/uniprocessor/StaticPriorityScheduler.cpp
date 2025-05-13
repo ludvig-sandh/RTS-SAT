@@ -16,5 +16,7 @@ UniprocessorSchedule StaticPriorityScheduler::GenerateSchedule(TaskSet &taskSet,
     AssignStaticPriorities(taskSet);
 
     StaticPrioritiesComparator priorityComparator(taskSet);
-    return GenerateScheduleImpl(taskSet, priorityComparator, allowPreemptions, preemptionDelay);
+    UniprocessorSchedule schedule = GenerateScheduleImpl(taskSet, priorityComparator, allowPreemptions, preemptionDelay);
+    schedule.Validate();
+    return schedule;
 }

@@ -10,7 +10,7 @@ MultiprocessorSchedule::MultiprocessorSchedule(TaskSet taskSet, uint32_t numCpus
 
 void MultiprocessorSchedule::AddTaskJob(TaskJob taskJob, uint32_t cpuIdx) {
     if (cpuIdx >= m_numCpus) {
-        const std::string msg = "Cannot add task to cpu number " + std::to_string(cpuIdx + 1) + " when the multiprocessor schedule has only " + std::to_string(m_numCpus) + " CPUs.";
+        const std::string msg = "Cannot add task to cpu number " + std::to_string(cpuIdx + 1) + " when the multiprocessor schedule only has " + std::to_string(m_numCpus) + " CPUs.";
         throw std::invalid_argument(msg);
     }
     m_cpuSchedules[cpuIdx].AddTaskJob(taskJob);
@@ -26,6 +26,22 @@ bool MultiprocessorSchedule::AreDeadlinesMet(bool shouldPrintMiss) const {
         }
     }
     return didFailForAnyCPU;
+}
+
+UniprocessorSchedule MultiprocessorSchedule::GetScheduleOfCore(uint32_t cpuIdx) {
+    if (cpuIdx >= m_numCpus) {
+        const std::string msg = "Cannot get schedule of cpu number " + std::to_string(cpuIdx + 1) + " when the multiprocessor schedule only has " + std::to_string(m_numCpus) + " CPUs.";
+        throw std::invalid_argument(msg);
+    }
+    return m_cpuSchedules[cpuIdx];
+}
+
+void MultiprocessorSchedule::SetScheduleOfCore(UniprocessorSchedule schedule, uint32_t cpuIdx) {
+    if (cpuIdx >= m_numCpus) {
+        const std::string msg = "Cannot get schedule of cpu number " + std::to_string(cpuIdx + 1) + " when the multiprocessor schedule only has " + std::to_string(m_numCpus) + " CPUs.";
+        throw std::invalid_argument(msg);
+    }
+    m_cpuSchedules[cpuIdx] = schedule;
 }
 
 void MultiprocessorSchedule::Validate() const {

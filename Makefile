@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Icore -Ischedulers -Isim -Ifeasibility -Igenerator
+CXXFLAGS := -std=c++17 -Wall -Wextra -Icore -Ischedulers/uniprocessor -Ischedulers/multiprocessor -Isim -Ifeasibility -Igenerator
 DEBUG_FLAGS := -g -O0 -fno-inline -fno-omit-frame-pointer -ggdb -fno-elide-constructors
 
 # Output folder
@@ -10,7 +10,8 @@ TARGET := $(BIN_DIR)/rts-sat
 
 # Source files
 SRCS := $(wildcard core/*.cpp) \
-        $(wildcard schedulers/*.cpp) \
+        $(wildcard schedulers/uniprocessor/*.cpp) \
+        $(wildcard schedulers/multiprocessor/*.cpp) \
         $(wildcard sim/*.cpp) \
         $(wildcard feasibility/*.cpp) \
         $(wildcard generator/*.cpp) \

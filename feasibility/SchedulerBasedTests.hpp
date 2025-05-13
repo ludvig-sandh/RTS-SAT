@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "FeasibilityTest.hpp"
-#include "SchedulingAlgorithm.hpp"
+#include "UniProcessorSchedulingAlgorithm.hpp"
 
 // Exact tests
 
@@ -14,7 +14,7 @@ private:
     void CheckApplicability(const TaskSet &taskSet) const override;
     bool RunTestImpl(const TaskSet &taskSet) const override;
 
-    virtual std::unique_ptr<SchedulingAlgorithm> GetScheduler() const = 0;
+    virtual std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const = 0;
 
 public:
     SchedulerBasedTest() = default;
@@ -26,7 +26,7 @@ public:
 
 class RMSchedulabilityTest : public SchedulerBasedTest {
 private:
-    std::unique_ptr<SchedulingAlgorithm> GetScheduler() const override;
+    std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const override;
 
 public:
     using SchedulerBasedTest::SchedulerBasedTest;
@@ -34,7 +34,7 @@ public:
 
 class DMSchedulabilityTest : public SchedulerBasedTest {
 private:
-    std::unique_ptr<SchedulingAlgorithm> GetScheduler() const override;
+    std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const override;
 
 public:
     using SchedulerBasedTest::SchedulerBasedTest;
@@ -42,7 +42,7 @@ public:
 
 class EDFSchedulabilityTest : public SchedulerBasedTest {
 private:
-    std::unique_ptr<SchedulingAlgorithm> GetScheduler() const override;
+    std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const override;
 
 public:
     using SchedulerBasedTest::SchedulerBasedTest;

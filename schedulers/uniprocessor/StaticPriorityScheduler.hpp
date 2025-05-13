@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SchedulingAlgorithm.hpp"
+#include "UniprocessorSchedulingAlgorithm.hpp"
 
 struct StaticPrioritiesComparator {
     const TaskSet& taskSet;
@@ -11,7 +11,7 @@ struct StaticPrioritiesComparator {
     bool operator()(const TaskJob& a, const TaskJob& b) const;
 };
 
-class StaticPriorityScheduler : public SchedulingAlgorithm {
+class StaticPriorityScheduler : public UniprocessorSchedulingAlgorithm {
 public:
     UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay) override;
     

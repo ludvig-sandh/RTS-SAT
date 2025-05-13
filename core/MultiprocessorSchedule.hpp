@@ -17,6 +17,10 @@ public:
     void AddTaskJob(TaskJob taskJob, uint32_t cpuIdx);
     bool AreDeadlinesMet(bool shouldPrintMiss) const;
 
+    // Getter and setter for the uniprocessor schedule for a core index (0-indexed)
+    UniprocessorSchedule GetScheduleOfCore(uint32_t cpuIdx);
+    void SetScheduleOfCore(UniprocessorSchedule schedule, uint32_t cpuIdx);
+
     void Validate() const;
     void Print() const;
 };

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SchedulingAlgorithm.hpp"
+#include "UniprocessorSchedulingAlgorithm.hpp"
 
-class EDFScheduler : public SchedulingAlgorithm {
+class EDFScheduler : public UniprocessorSchedulingAlgorithm {
 public:
     UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay) override;
 };

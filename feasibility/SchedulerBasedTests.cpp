@@ -9,7 +9,7 @@ void SchedulerBasedTest::CheckApplicability(const TaskSet &taskSet) const {
 }
 
 bool SchedulerBasedTest::RunTestImpl(const TaskSet &taskSet) const {
-    std::unique_ptr<SchedulingAlgorithm> alg = GetScheduler();
+    std::unique_ptr<UniprocessorSchedulingAlgorithm> alg = GetScheduler();
     Simulator simulator(alg.get()); // Pass raw pointer since simulator doesn't take ownership.
     simulator.SetPreemptionsAllowed(m_allowPreemptions);
     simulator.SetPreemptionDelay(m_preemptionDelay);
@@ -18,14 +18,14 @@ bool SchedulerBasedTest::RunTestImpl(const TaskSet &taskSet) const {
     return schedule.AreDeadlinesMet(false);
 }
 
-std::unique_ptr<SchedulingAlgorithm> RMSchedulabilityTest::GetScheduler() const {
+std::unique_ptr<UniprocessorSchedulingAlgorithm> RMSchedulabilityTest::GetScheduler() const {
     return std::make_unique<RMScheduler>();
 }
 
-std::unique_ptr<SchedulingAlgorithm> DMSchedulabilityTest::GetScheduler() const {
+std::unique_ptr<UniprocessorSchedulingAlgorithm> DMSchedulabilityTest::GetScheduler() const {
     return std::make_unique<RMScheduler>();
 }
 
-std::unique_ptr<SchedulingAlgorithm> EDFSchedulabilityTest::GetScheduler() const {
+std::unique_ptr<UniprocessorSchedulingAlgorithm> EDFSchedulabilityTest::GetScheduler() const {
     return std::make_unique<RMScheduler>();
 }
