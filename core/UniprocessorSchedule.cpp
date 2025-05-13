@@ -34,13 +34,13 @@ void UniprocessorSchedule::Validate() const {
 
     for (const TaskJob &job : m_scheduledTasks) {
         if (job.start > job.end) {
-            throw InvalidScheduleException("Validation error: An instance of task " + std::to_string(job.taskId) + " has a start time after its end time.");
+            throw InvalidScheduleException("Validation error: An instance of task " + job.taskId + " has a start time after its end time.");
         }
         if (lastJob && job.end < lastJob->start) {
             throw InvalidScheduleException("Validation error: Schedule wasn't ordered by time");
         }
         if (lastJob && job.start < lastJob->end) {
-            throw InvalidScheduleException("Validation error: Instances of tasks " + std::to_string(job.taskId) + " and " + std::to_string(lastJob->taskId) + " executed at the same time.");
+            throw InvalidScheduleException("Validation error: Instances of tasks " + job.taskId + " and " + lastJob->taskId + " executed at the same time.");
         }
 
         lastJob = &job;
@@ -66,7 +66,7 @@ void UniprocessorSchedule::ExportToCsv(const std::string& filename) const {
         file << std::to_string(job.arrival) << ",";
         file << std::to_string(job.deadline) << ",";
         file << std::to_string(job.instanceNumber) << ",";
-        file << std::to_string(job.taskId) << ",";
+        file << job.taskId << ",";
         file << std::to_string(job.remainingTime) << ",";
         file << std::to_string(job.start) << ",";
         file << std::to_string(job.end) << ",";

@@ -11,7 +11,7 @@ TaskSet TaskSetGenerator::Generate() {
         if (!m_config.implicitDeadlines) {
             D = m_rng.GenerateInRange(C, T);
         }
-        PeriodicTask task(C, D, T, i + 1);
+        PeriodicTask task(C, D, T, std::to_string(i + 1));
         tasks.push_back(task);
     }
     return tasks;

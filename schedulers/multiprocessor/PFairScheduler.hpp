@@ -17,22 +17,22 @@ private:
     // Prints debug info for scheduling step t, including task IDs, lag values,
     // and categorized task lists like urgent, tnegru, contending, etc.
     void PrintStep(uint32_t t,
-                   const std::vector<uint32_t> &allTaskIds,
-                   const std::unordered_map<uint32_t, int32_t> &lagTableRow,
-                   const std::vector<uint32_t> &urgent,
-                   const std::vector<uint32_t> &tnegru,
-                   const std::vector<uint32_t> &contending,
-                   const std::vector<uint32_t> &toSchedule) const;
+                   const std::vector<std::string> &allTaskIds,
+                   const std::unordered_map<std::string, int32_t> &lagTableRow,
+                   const std::vector<std::string> &urgent,
+                   const std::vector<std::string> &tnegru,
+                   const std::vector<std::string> &contending,
+                   const std::vector<std::string> &toSchedule) const;
 };
 
 struct CharStringComparator {
-    const std::unordered_map<uint32_t, std::vector<int8_t>> &charString;
+    const std::unordered_map<std::string, std::vector<int8_t>> &charString;
     const uint32_t t;
 
-    CharStringComparator(const std::unordered_map<uint32_t, std::vector<int8_t>> &charString, uint32_t t) : charString(charString), t(t) {}
+    CharStringComparator(const std::unordered_map<std::string, std::vector<int8_t>> &charString, uint32_t t) : charString(charString), t(t) {}
 
     // Should return true if a should come before b
-    bool operator()(uint32_t a, uint32_t b) const {
+    bool operator()(std::string a, std::string b) const {
         std::size_t i = t;
 
         // Use at() instead of [] operator because it is const and won't modify the map

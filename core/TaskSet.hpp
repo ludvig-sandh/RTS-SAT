@@ -21,8 +21,8 @@ public:
     std::vector<PeriodicTask> GetHigherPriorityTasks(uint32_t prio) const;
 
     // Sets the priority of a specific task
-    void SetPriority(uint32_t taskId, uint32_t prio);
-    const PeriodicTask &GetTask(uint32_t taskId) const;
+    void SetPriority(std::string taskId, uint32_t prio);
+    const PeriodicTask &GetTask(std::string taskId) const;
 
     uint32_t GetNumTasks() const;
     uint32_t GetHyperPeriod() const;

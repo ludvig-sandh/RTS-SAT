@@ -10,12 +10,13 @@
 #include "SchedulerBasedTests.hpp"
 #include "ResponseTimeAnalysisTest.hpp"
 #include "LiuLaylandUtilizationBoundTest.hpp"
+#include "PFairScheduler.hpp"
 
 // Returns a sample task set
 TaskSet getSampleTaskSet1() {
     std::vector<PeriodicTask> tasks;
-    tasks.push_back(PeriodicTask(2, 5, 5, 1));
-    tasks.push_back(PeriodicTask(3, 10, 10, 2));
+    tasks.push_back(PeriodicTask(2, 5, 5, "1"));
+    tasks.push_back(PeriodicTask(3, 10, 10, "2"));
     return TaskSet(tasks);
 }
 
@@ -97,8 +98,31 @@ void example3() {
     std::cout << "Liu & Layland's utilization bound test " << resultString << std::endl;
 }
 
+void example4() {
+    std::vector<PeriodicTask> tasks;
+
+    // Tasks from paper:
+    // tasks.push_back(PeriodicTask(1, 3, 3, "v"));
+    // tasks.push_back(PeriodicTask(2, 4, 4, "w"));
+    // tasks.push_back(PeriodicTask(5, 7, 7, "x"));
+    // tasks.push_back(PeriodicTask(8, 11, 11, "y"));
+    // tasks.push_back(PeriodicTask(335, 462, 462, "z"));
+
+    // Tasks from HW2:
+    tasks.push_back(PeriodicTask(4, 8, 8, "1"));
+    tasks.push_back(PeriodicTask(1, 4, 4, "2"));
+    tasks.push_back(PeriodicTask(7, 8, 8, "3"));
+    tasks.push_back(PeriodicTask(3, 8, 8, "4"));
+
+    TaskSet taskSet(tasks);
+
+    PFairScheduler scheduler(true);
+    MultiprocessorSchedule schedule = scheduler.GenerateSchedule(taskSet, 2);
+}
+
 int main() {
-    example1();
+    // example1();
     // example2();
     // example3();
+    example4();
 }

@@ -28,7 +28,7 @@ std::vector<PeriodicTask> TaskSet::GetHigherPriorityTasks(uint32_t prio) const {
     return tasks;
 }
 
-void TaskSet::SetPriority(uint32_t taskId, uint32_t prio) {
+void TaskSet::SetPriority(std::string taskId, uint32_t prio) {
     for (PeriodicTask &task : m_tasks) {
         if (task.id == taskId) {
             task.prio = prio;
@@ -37,7 +37,7 @@ void TaskSet::SetPriority(uint32_t taskId, uint32_t prio) {
     }
 }
 
-const PeriodicTask &TaskSet::GetTask(uint32_t taskId) const {
+const PeriodicTask &TaskSet::GetTask(std::string taskId) const {
     for (const PeriodicTask &task : m_tasks) {
         if (task.id == taskId) {
             return task;
@@ -71,7 +71,7 @@ std::deque<TaskJob> TaskSet::GetAllTaskJobs() const {
                 task.O + (instanceNumber - 1) * task.T, // absolute arrival
                 task.O + (instanceNumber - 1) * task.T + task.D, // absolute deadline
                 instanceNumber,
-                (uint32_t)task.id,
+                task.id,
                 task.C // remaining time to execute
             );
             instances.push_back(instance);
