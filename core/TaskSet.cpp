@@ -43,8 +43,8 @@ const PeriodicTask &TaskSet::GetTask(std::string taskId) const {
             return task;
         }
     }
-    // TODO: Raise exception
-    return m_tasks.back();
+    
+    throw std::invalid_argument("Cannot run GetTask() with a taskId that doesn't exist in the task set.");
 }
 
 uint32_t TaskSet::GetNumTasks() const {
