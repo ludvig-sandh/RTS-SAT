@@ -8,8 +8,8 @@ void Simulator::SetPreemptionDelay(uint32_t preemptionDelay) {
     m_preemptionDelay = preemptionDelay;
 }
 
-Schedule Simulator::run(TaskSet taskSet) const {
-    Schedule schedule = m_algorithm->GenerateSchedule(taskSet, m_isPreemptionsAllowed, m_preemptionDelay);
+UniprocessorSchedule Simulator::run(TaskSet taskSet) const {
+    UniprocessorSchedule schedule = m_algorithm->GenerateSchedule(taskSet, m_isPreemptionsAllowed, m_preemptionDelay);
 
     // Ensure that the schedule doesn't contain errors such as invalid times etc.
     schedule.Validate();

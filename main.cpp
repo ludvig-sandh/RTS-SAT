@@ -33,7 +33,7 @@ void example1() {
     taskSet.Print(); // Display task set in the terminal
 
     // Get the schedule by running the simulator
-    Schedule schedule = simulator.run(taskSet);
+    UniprocessorSchedule schedule = simulator.run(taskSet);
     
     // Print the scheduled jobs in the terminal
     schedule.Print();
@@ -67,7 +67,7 @@ void example2() {
     TaskSet taskSet = generator.Generate();
 
     // Get the schedule by running the simulator
-    Schedule schedule = simulator.run(taskSet);
+    UniprocessorSchedule schedule = simulator.run(taskSet);
     
     // Check deadlines
     std::cout << "Checking if deadlines are respected..." << std::endl;

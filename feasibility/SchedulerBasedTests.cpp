@@ -14,7 +14,7 @@ bool SchedulerBasedTest::RunTestImpl(const TaskSet &taskSet) const {
     simulator.SetPreemptionsAllowed(m_allowPreemptions);
     simulator.SetPreemptionDelay(m_preemptionDelay);
 
-    Schedule schedule = simulator.run(taskSet);
+    UniprocessorSchedule schedule = simulator.run(taskSet);
     return schedule.AreDeadlinesMet(false);
 }
 

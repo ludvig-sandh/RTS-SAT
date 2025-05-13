@@ -4,19 +4,19 @@
 #include <stdexcept>
 #include "Task.hpp"
 #include "TaskSet.hpp"
-#include "Schedule.hpp"
+#include "UniprocessorSchedule.hpp"
 
 class SchedulingAlgorithm {
 public:
     virtual ~SchedulingAlgorithm() = default;
 
     // Core method each algorithm must implement
-    virtual Schedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay = 0) = 0;
+    virtual UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay = 0) = 0;
 
 protected:
     template <typename Comparator>
-    Schedule GenerateScheduleImpl(TaskSet& taskSet, Comparator priorityComp, bool allowPreemptions, uint32_t preemptionDelay) {
-        Schedule schedule(taskSet);
+    UniprocessorSchedule GenerateScheduleImpl(TaskSet& taskSet, Comparator priorityComp, bool allowPreemptions, uint32_t preemptionDelay) {
+        UniprocessorSchedule schedule(taskSet);
     
         // Get all task instances (sorted by ascending arrival time)
         std::deque<TaskJob> pendingJobs = taskSet.GetAllTaskJobs();

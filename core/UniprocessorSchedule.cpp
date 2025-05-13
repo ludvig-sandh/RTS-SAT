@@ -2,15 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "Schedule.hpp"
+#include "UniprocessorSchedule.hpp"
 #include "Task.hpp"
 
-void Schedule::AddTaskJob(TaskJob taskJob) {
+void UniprocessorSchedule::AddTaskJob(TaskJob taskJob) {
     m_scheduledTasks.push_back(taskJob);
 }
 
-bool Schedule::AreDeadlinesMet(bool shouldPrintMiss) {
-    // Check if all fragments meet the deadlines of the tasks they belong to
+bool UniprocessorSchedule::AreDeadlinesMet(bool shouldPrintMiss) const {
+    // Check if all jobs meet the deadlines of the tasks they belong to
     for (const TaskJob &taskJob : m_scheduledTasks) {
         if (taskJob.end > taskJob.deadline) {
             if (shouldPrintMiss) {
@@ -24,7 +24,7 @@ bool Schedule::AreDeadlinesMet(bool shouldPrintMiss) {
     return true;
 }
 
-void Schedule::Validate() const {
+void UniprocessorSchedule::Validate() const {
     const TaskJob *lastJob = nullptr;
     uint32_t hyperPeriod = m_taskset.GetHyperPeriod();
 
@@ -47,7 +47,7 @@ void Schedule::Validate() const {
     }
 }
 
-void Schedule::Print() const {
+void UniprocessorSchedule::Print() const {
     std::cout << "Printing schedule" << std::endl;
     for (const TaskJob &job : m_scheduledTasks) {
         std::cout << "Task " << job.taskId << " scheduled from " << job.start << " to " << job.end << " (instance " << job.instanceNumber << ")";
@@ -59,7 +59,7 @@ void Schedule::Print() const {
     std::cout << std::endl;
 }
 
-void Schedule::ExportToCsv(const std::string& filename) const {
+void UniprocessorSchedule::ExportToCsv(const std::string& filename) const {
     std::ofstream file(filename);
     file << "arrival,deadline,instanceNumber,taskId,remainingTime,start,end,priority,executionTime,period,offset\n";
     for (const TaskJob &job : m_scheduledTasks) {

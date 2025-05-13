@@ -7,14 +7,14 @@
 #include "Task.hpp"
 #include "TaskSet.hpp"
 
-class Schedule {
+class UniprocessorSchedule {
 private:
     TaskSet m_taskset;
     std::vector<TaskJob> m_scheduledTasks;
 public:
-    Schedule(TaskSet taskset) : m_taskset(taskset) {};
-    void AddTaskJob(TaskJob taskFragment);
-    bool AreDeadlinesMet(bool shouldPrintMiss);
+    UniprocessorSchedule(TaskSet taskset) : m_taskset(taskset) {};
+    void AddTaskJob(TaskJob taskJob);
+    bool AreDeadlinesMet(bool shouldPrintMiss) const;
 
     // Checks that the schedule is valid (i.e. no two tasks running simultaneously etc.)
     void Validate() const;
