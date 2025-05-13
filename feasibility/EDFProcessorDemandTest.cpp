@@ -37,13 +37,13 @@ bool EDFProcessorDemandTest::RunTestImpl(const TaskSet &taskSet) const {
 
     // Test succeeds if and only if the cpu demand is <= controlPoint for each control point.
     std::unordered_set<uint32_t> controlPoints = taskSet.GetAbsoluteDeadlines();
-    for (uint32_t controlPoint : controlPoints) {
+    for (int32_t controlPoint : controlPoints) { // Convert to signed intentionally
         // We only need to check control points < L_max
-        if (controlPoint > L_max) {
+        if ((uint32_t)controlPoint > L_max) {
             continue;
         }
 
-        uint32_t cpuDemand = ComputeProcessorDemand(taskSet, controlPoint);
+        int32_t cpuDemand = ComputeProcessorDemand(taskSet, controlPoint);
         if (cpuDemand > controlPoint) {
             return false;
         }
@@ -52,10 +52,15 @@ bool EDFProcessorDemandTest::RunTestImpl(const TaskSet &taskSet) const {
     return true;
 }
 
-uint32_t EDFProcessorDemandTest::ComputeProcessorDemand(const TaskSet &taskSet, uint32_t controlPoint) const {
-    uint32_t cpuDemand = 0;
+int32_t EDFProcessorDemandTest::ComputeProcessorDemand(const TaskSet &taskSet, int32_t controlPoint) const {
+    int32_t cpuDemand = 0;
     for (const PeriodicTask &task : taskSet.GetTasks()) {
-        cpuDemand += ((controlPoint - task.D) / task.T + 1) * task.C;
+        int32_t valueToFloorWithT = controlPoint - (int32_t)task.D;
+        if (valueToFloorWithT < 0) {
+            // Make sure flooring works for negative numbers by moving down to closest negative multiple of T
+            valueToFloorWithT = valueToFloorWithT + (-valueToFloorWithT) % (int32_t)task.T - task.T;
+        }
+        cpuDemand += (valueToFloorWithT / (int32_t)task.T + 1) * (int32_t)task.C;
     }
     return cpuDemand;
 }

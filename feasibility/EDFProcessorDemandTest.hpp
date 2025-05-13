@@ -6,5 +6,5 @@ class EDFProcessorDemandTest : public FeasibilityTest {
 private:
     void CheckApplicability(const TaskSet &taskSet) const override;
     bool RunTestImpl(const TaskSet &taskSet) const override;
-    uint32_t ComputeProcessorDemand(const TaskSet &taskSet, uint32_t controlPoint) const;
+    int32_t ComputeProcessorDemand(const TaskSet &taskSet, int32_t controlPoint) const;
 };
