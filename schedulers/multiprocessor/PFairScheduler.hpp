@@ -10,19 +10,6 @@ public:
     PFairScheduler(bool shouldPrintSteps = false) : m_shouldPrintSteps(shouldPrintSteps) {};
 protected:
     MultiprocessorSchedule GenerateScheduleImpl(TaskSet &taskSet, uint32_t numCpus) override;
-
-private:
-    int8_t ComputeSign(uint32_t C, uint32_t T, uint32_t t) const;
-
-    // Prints debug info for scheduling step t, including task IDs, lag values,
-    // and categorized task lists like urgent, tnegru, contending, etc.
-    void PrintStep(uint32_t t,
-                   const std::vector<std::string> &allTaskIds,
-                   const std::unordered_map<std::string, int32_t> &lagTableRow,
-                   const std::vector<std::string> &urgent,
-                   const std::vector<std::string> &tnegru,
-                   const std::vector<std::string> &contending,
-                   const std::vector<std::string> &toSchedule) const;
 };
 
 struct CharStringComparator {

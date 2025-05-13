@@ -12,5 +12,5 @@ public:
     MultiprocessorSchedule GenerateSchedule(TaskSet &taskSet, uint32_t numCpus);
 
 protected:
-    virtual MultiprocessorSchedule GenerateScheduleImpl(TaskSet &taskSet, uint32_t numCpus);
+    virtual MultiprocessorSchedule GenerateScheduleImpl(TaskSet &taskSet, uint32_t numCpus) = 0;
 };
