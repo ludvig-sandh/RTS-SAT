@@ -11,8 +11,8 @@ struct PeriodicTask {
     std::string id; // Unique identifier for this task
     uint32_t prio; // Higher value <=> higher priority
 
-    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, std::string id) : C(C), D(D), T(T), O(0), id(id), prio(UINT32_MAX) {};
-    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, uint32_t O, std::string id) : C(C), D(D), T(T), O(O), id(id), prio(UINT32_MAX) {};
+    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, const std::string &id) : C(C), D(D), T(T), O(0), id(id), prio(UINT32_MAX) {};
+    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, uint32_t O, const std::string &id) : C(C), D(D), T(T), O(O), id(id), prio(UINT32_MAX) {};
 };
 
 struct TaskJob {
@@ -24,10 +24,10 @@ struct TaskJob {
     uint32_t start; // The time the job is scheduled - is set by the scheduler at a later stage
     uint32_t end; // The time the job completes (or is preempted) - is set by the scheduler at a later stage
 
-    TaskJob(uint32_t arrival, uint32_t deadline, uint32_t instanceNumber, std::string taskId, uint32_t remainingTime) :
+    TaskJob(uint32_t arrival, uint32_t deadline, uint32_t instanceNumber, const std::string &taskId, uint32_t remainingTime) :
         arrival(arrival), deadline(deadline), instanceNumber(instanceNumber), taskId(taskId), remainingTime(remainingTime), start(UINT32_MAX), end(UINT32_MAX) {};
 
-    TaskJob(uint32_t arrival, uint32_t deadline, uint32_t instanceNumber, std::string taskId, uint32_t remainingTime, uint32_t start, uint32_t end) :
+    TaskJob(uint32_t arrival, uint32_t deadline, uint32_t instanceNumber, const std::string &taskId, uint32_t remainingTime, uint32_t start, uint32_t end) :
         arrival(arrival), deadline(deadline), instanceNumber(instanceNumber), taskId(taskId), remainingTime(remainingTime), start(start), end(end) {};
 
     void Print() const;
