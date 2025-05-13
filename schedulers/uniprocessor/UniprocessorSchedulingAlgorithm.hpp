@@ -8,8 +8,6 @@
 
 class UniprocessorSchedulingAlgorithm {
 public:
-    virtual ~UniprocessorSchedulingAlgorithm() = default;
-
     // Core method each algorithm must implement
     virtual UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay = 0) = 0;
 

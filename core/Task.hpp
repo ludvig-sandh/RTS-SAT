@@ -26,5 +26,8 @@ struct TaskJob {
     TaskJob(uint32_t arrival, uint32_t deadline, uint32_t instanceNumber, uint32_t taskId, uint32_t remainingTime) :
         arrival(arrival), deadline(deadline), instanceNumber(instanceNumber), taskId(taskId), remainingTime(remainingTime), start(UINT32_MAX), end(UINT32_MAX) {};
 
+    TaskJob(uint32_t arrival, uint32_t deadline, uint32_t instanceNumber, uint32_t taskId, uint32_t remainingTime, uint32_t start, uint32_t end) :
+        arrival(arrival), deadline(deadline), instanceNumber(instanceNumber), taskId(taskId), remainingTime(remainingTime), start(start), end(end) {};
+
     void Print() const;
 };
