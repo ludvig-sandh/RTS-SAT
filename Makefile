@@ -30,13 +30,19 @@ GTEST_INCLUDES := -I$(GTEST_DIR) -I$(GTEST_DIR)/include
 
 # ==== TESTS ====
 TEST_SRCS := $(wildcard core/*.cpp) \
-        $(wildcard schedulers/*.cpp) \
+        $(wildcard schedulers/uniprocessor/*.cpp) \
+        $(wildcard schedulers/multiprocessor/*.cpp) \
         $(wildcard sim/*.cpp) \
         $(wildcard feasibility/*.cpp) \
-        $(wildcard generator/*.cpp)
+        $(wildcard generator/*.cpp) \
+		$(wildcard tests/core/*.cpp) \
+		$(wildcard tests/schedulers/uniprocessor/*.cpp) \
+        $(wildcard tests/schedulers/multiprocessor/*.cpp) \
+        $(wildcard tests/sim/*.cpp) \
+        $(wildcard tests/feasibility/*.cpp) \
+        $(wildcard tests/generator/*.cpp)
 
-TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS)) \
-             $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(wildcard tests/*.cpp))
+TEST_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(TEST_SRCS))
 
 TEST_TARGET := $(BIN_DIR)/tests
 

@@ -11,8 +11,11 @@ struct PeriodicTask {
     std::string id; // Unique identifier for this task
     uint32_t prio; // Higher value <=> higher priority
 
-    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, const std::string &id) : C(C), D(D), T(T), O(0), id(id), prio(UINT32_MAX) {};
-    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, uint32_t O, const std::string &id) : C(C), D(D), T(T), O(O), id(id), prio(UINT32_MAX) {};
+    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, const std::string &id);
+    PeriodicTask(uint32_t C, uint32_t D, uint32_t T, uint32_t O, const std::string &id);
+
+private:
+    void CheckNonZeroPeriod() const;
 };
 
 struct TaskJob {

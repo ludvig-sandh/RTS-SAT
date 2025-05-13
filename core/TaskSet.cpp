@@ -5,8 +5,9 @@
 
 TaskSet::TaskSet(std::vector<PeriodicTask> tasks) {
     if (tasks.size() == 0) {
-        throw std::runtime_error("Cannot create a task set out of zero tasks.");
+        throw std::invalid_argument("Cannot create a task set out of zero tasks.");
     }
+
     m_tasks = tasks;
 }
 
@@ -78,7 +79,7 @@ std::deque<TaskJob> TaskSet::GetAllTaskJobs() const {
         }
     }
 
-    // Sort by arrival time (ascending) and then highest priority first
+    // Sort by arrival time (ascending)
     std::sort(instances.begin(), instances.end(),
               [](const TaskJob& a, const TaskJob& b) {
                   return a.arrival < b.arrival;
