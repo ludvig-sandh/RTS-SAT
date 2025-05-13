@@ -5,6 +5,9 @@
 #include "TaskSet.hpp"
 #include "LiuLaylandUtilizationBoundTest.hpp"
 #include "EDFUtilizationBoundTest.hpp"
+#include "ResponseTimeAnalysisTest.hpp"
+#include "RMScheduler.hpp"
+#include "DMScheduler.hpp"
 
 // Liu & Layland's Utilization Bound Tests
 
@@ -172,4 +175,139 @@ TEST(feasibility, EDF8_JustOverBound) {
     };
     TaskSet taskSet(tasks);
     EXPECT_FALSE(EDFUtilizationBoundTest().RunTest(taskSet));
+}
+
+
+// Response Time Analysis (RTA) Tests
+
+TEST(feasibility, RTA_ImplicitDeadline1) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(1, 4, 4, "A"),
+        PeriodicTask(1, 5, 5, "B")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_ImplicitDeadline2) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(3, 5, 5, "A"),
+        PeriodicTask(3, 5, 5, "B")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_FALSE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_ConstrainedDeadline1) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(1, 3, 4, "A"),
+        PeriodicTask(1, 4, 5, "B"),
+        PeriodicTask(1, 6, 6, "C")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_ConstrainedDeadline2) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(2, 3, 5, "A"),  // tight deadline
+        PeriodicTask(2, 3, 6, "B"),  // tight deadline
+        PeriodicTask(2, 4, 7, "C")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_FALSE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_ConstrainedDeadline3) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(1, 3, 5, "A"),
+        PeriodicTask(2, 6, 8, "B"),
+        PeriodicTask(1, 9, 10, "C")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_ConstrainedDeadline4) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(2, 3, 5, "A"),
+        PeriodicTask(3, 4, 6, "B"),
+        PeriodicTask(2, 5, 7, "C")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_FALSE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_ConstrainedDeadline5) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(1, 2, 5, "A"),
+        PeriodicTask(2, 5, 6, "B"),
+        PeriodicTask(1, 9, 10, "C")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_ConstrainedDeadline6) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(1, 2, 5, "A"),
+        PeriodicTask(3, 4, 6, "B"),
+        PeriodicTask(1, 8, 10, "C")
+    };
+    TaskSet taskSet(tasks);
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+
+// Response Time Analysis (DM) vs RM — Tasks where D != T
+
+TEST(feasibility, RTA_DM_Passes_RM_Fails1) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(3, 5, 7, "A"),
+        PeriodicTask(2, 4, 14, "B"),
+    };
+    TaskSet taskSet(tasks);
+
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_FALSE(ResponseTimeAnalysisTest().RunTest(taskSet));
+
+    DMScheduler dm;
+    dm.AssignStaticPriorities(taskSet);
+    EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+TEST(feasibility, RTA_DM_Passes_RM_Fails2) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(2, 3, 6, "A"),
+        PeriodicTask(1, 5, 5, "B"),
+        PeriodicTask(2, 6, 6, "C")
+    };
+    TaskSet taskSet(tasks);
+    
+    RMScheduler rm;
+    rm.AssignStaticPriorities(taskSet);
+    EXPECT_FALSE(ResponseTimeAnalysisTest().RunTest(taskSet));
+
+    DMScheduler dm;
+    dm.AssignStaticPriorities(taskSet);
+    // DM ordering: A > B > C
+    // RM ordering: B > C > A (since B,C have shorter T)
+    EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
 }
