@@ -5,6 +5,7 @@
 #include "TaskSet.hpp"
 #include "LiuLaylandUtilizationBoundTest.hpp"
 #include "EDFUtilizationBoundTest.hpp"
+#include "EDFProcessorDemandTest.hpp"
 #include "ResponseTimeAnalysisTest.hpp"
 #include "RMScheduler.hpp"
 #include "DMScheduler.hpp"
@@ -310,4 +311,37 @@ TEST(feasibility, RTA_DM_Passes_RM_Fails2) {
     // DM ordering: A > B > C
     // RM ordering: B > C > A (since B,C have shorter T)
     EXPECT_TRUE(ResponseTimeAnalysisTest().RunTest(taskSet));
+}
+
+
+// EDF CPU Demand Tests
+
+TEST(feasibility, EDF_CPU_Demand1) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(3, 5, 20, "1"),
+        PeriodicTask(10, 25, 30, "2"),
+        PeriodicTask(25, 40, 60, "3")
+    };
+    TaskSet taskSet(tasks);
+    EXPECT_FALSE(EDFProcessorDemandTest().RunTest(taskSet));
+}
+
+TEST(feasibility, EDF_CPU_Demand2) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(6, 10, 15, "1"),
+        PeriodicTask(2, 8, 25, "2"),
+        PeriodicTask(20, 38, 75, "3")
+    };
+    TaskSet taskSet(tasks);
+    EXPECT_FALSE(EDFProcessorDemandTest().RunTest(taskSet));
+}
+
+TEST(feasibility, EDF_CPU_Demand3) {
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(1, 4, 4, "1"),
+        PeriodicTask(3, 10, 15, "2"),
+        PeriodicTask(6, 14, 18, "3")
+    };
+    TaskSet taskSet(tasks);
+    EXPECT_TRUE(EDFProcessorDemandTest().RunTest(taskSet));
 }
