@@ -1,6 +1,11 @@
 #include <iostream>
 #include "Task.hpp"
 
+PeriodicTask::PeriodicTask(uint32_t C, uint32_t T, const std::string &id)
+    : C(C), D(T), T(T), O(0), id(id), prio(UINT32_MAX) {
+    CheckNonZeroPeriod();
+};
+
 PeriodicTask::PeriodicTask(uint32_t C, uint32_t D, uint32_t T, const std::string &id)
     : C(C), D(D), T(T), O(0), id(id), prio(UINT32_MAX) {
     CheckNonZeroPeriod();
