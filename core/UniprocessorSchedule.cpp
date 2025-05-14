@@ -6,12 +6,12 @@
 #include "Task.hpp"
 
 void UniprocessorSchedule::AddTaskJob(TaskJob taskJob) {
-    m_scheduledTasks.push_back(taskJob);
+    m_scheduledJobs.push_back(taskJob);
 }
 
 bool UniprocessorSchedule::AreDeadlinesMet(bool shouldPrintMiss) const {
     // Check if all jobs meet the deadlines of the tasks they belong to
-    for (const TaskJob &taskJob : m_scheduledTasks) {
+    for (const TaskJob &taskJob : m_scheduledJobs) {
         if (taskJob.end > taskJob.deadline) {
             if (shouldPrintMiss) {
                 std::cout << "The following task job didn't meet its deadline:" << std::endl;
@@ -24,15 +24,19 @@ bool UniprocessorSchedule::AreDeadlinesMet(bool shouldPrintMiss) const {
     return true;
 }
 
+const std::vector<TaskJob> &UniprocessorSchedule::GetScheduledJobs() const {
+    return m_scheduledJobs;
+}
+
 void UniprocessorSchedule::Validate() const {
     const TaskJob *lastJob = nullptr;
-    uint32_t hyperPeriod = m_taskset.GetHyperPeriod();
+    uint32_t hyperPeriod = m_taskSet.GetHyperPeriod();
 
     if (hyperPeriod == 0) {
         throw InvalidScheduleException("Validation error: Hyperperiod is invalid (zero).");
     }
 
-    for (const TaskJob &job : m_scheduledTasks) {
+    for (const TaskJob &job : m_scheduledJobs) {
         if (job.start > job.end) {
             throw InvalidScheduleException("Validation error: An instance of task " + job.taskId + " has a start time after its end time.");
         }
@@ -49,7 +53,7 @@ void UniprocessorSchedule::Validate() const {
 
 void UniprocessorSchedule::Print() const {
     std::cout << "Printing schedule" << std::endl;
-    for (const TaskJob &job : m_scheduledTasks) {
+    for (const TaskJob &job : m_scheduledJobs) {
         std::cout << "Task " << job.taskId << " scheduled from " << job.start << " to " << job.end << " (instance " << job.instanceNumber << ")";
         if (job.end > job.deadline) {
             std::cout << " (missed deadline)";
@@ -62,7 +66,7 @@ void UniprocessorSchedule::Print() const {
 void UniprocessorSchedule::ExportToCsv(const std::string& filename) const {
     std::ofstream file(filename);
     file << "arrival,deadline,instanceNumber,taskId,remainingTime,start,end,priority,executionTime,period,offset\n";
-    for (const TaskJob &job : m_scheduledTasks) {
+    for (const TaskJob &job : m_scheduledJobs) {
         file << std::to_string(job.arrival) << ",";
         file << std::to_string(job.deadline) << ",";
         file << std::to_string(job.instanceNumber) << ",";
@@ -70,10 +74,10 @@ void UniprocessorSchedule::ExportToCsv(const std::string& filename) const {
         file << std::to_string(job.remainingTime) << ",";
         file << std::to_string(job.start) << ",";
         file << std::to_string(job.end) << ",";
-        file << std::to_string(m_taskset.GetTask(job.taskId).prio) << ",";
-        file << std::to_string(m_taskset.GetTask(job.taskId).C) << ",";
-        file << std::to_string(m_taskset.GetTask(job.taskId).T) << ",";
-        file << std::to_string(m_taskset.GetTask(job.taskId).O) << "\n";
+        file << std::to_string(m_taskSet.GetTask(job.taskId).prio) << ",";
+        file << std::to_string(m_taskSet.GetTask(job.taskId).C) << ",";
+        file << std::to_string(m_taskSet.GetTask(job.taskId).T) << ",";
+        file << std::to_string(m_taskSet.GetTask(job.taskId).O) << "\n";
     }
     file.close();
     std::cout << "Wrote schedule to " << filename << "\n";

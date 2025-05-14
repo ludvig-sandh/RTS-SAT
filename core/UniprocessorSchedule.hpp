@@ -6,19 +6,22 @@
 #include <exception>
 #include "Task.hpp"
 #include "TaskSet.hpp"
+#include "BaseSchedule.hpp"
 
-class UniprocessorSchedule {
+class UniprocessorSchedule : public BaseSchedule {
 private:
-    TaskSet m_taskset;
-    std::vector<TaskJob> m_scheduledTasks;
+    std::vector<TaskJob> m_scheduledJobs;
 public:
-    UniprocessorSchedule(TaskSet taskset) : m_taskset(taskset) {};
+    UniprocessorSchedule(TaskSet taskset) : BaseSchedule(taskset) {};
     void AddTaskJob(TaskJob taskJob);
-    bool AreDeadlinesMet(bool shouldPrintMiss) const;
+    bool AreDeadlinesMet(bool shouldPrintMiss) const override;
+
+    // Returns a reference to the scheduled tasks
+    const std::vector<TaskJob> &GetScheduledJobs() const;
 
     // Checks that the schedule is valid (i.e. no two tasks running simultaneously etc.)
-    void Validate() const;
-    void Print() const;
+    void Validate() const override;
+    void Print() const override;
     void ExportToCsv(const std::string& filename = "schedule.csv") const;
 };
 

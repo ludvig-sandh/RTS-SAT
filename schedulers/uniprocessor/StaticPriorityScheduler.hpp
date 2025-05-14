@@ -13,7 +13,7 @@ struct StaticPrioritiesComparator {
 
 class StaticPriorityScheduler : public UniprocessorSchedulingAlgorithm {
 public:
-    UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay) override;
+    UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions = true, uint32_t preemptionDelay = 0) override;
     
     virtual void AssignStaticPriorities(TaskSet& taskSet) const = 0;
 };

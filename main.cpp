@@ -7,10 +7,13 @@
 #include "DMScheduler.hpp"
 #include "EDFScheduler.hpp"
 #include "TaskSetGenerator.hpp"
-#include "SchedulerBasedTests.hpp"
+#include "UniprocessorSchedulerBasedTests.hpp"
+#include "MultiprocessorSchedulerBasedTests.hpp"
 #include "ResponseTimeAnalysisTest.hpp"
 #include "LiuLaylandUtilizationBoundTest.hpp"
 #include "PFairScheduler.hpp"
+#include "RMFFScheduler.hpp"
+#include "RMFFUtilizationBoundTest.hpp"
 
 // Returns a sample task set
 TaskSet getSampleTaskSet1() {
@@ -120,9 +123,32 @@ void example4() {
     MultiprocessorSchedule schedule = scheduler.GenerateSchedule(taskSet, 2);
 }
 
+void example5() {
+    std::vector<PeriodicTask> tasks;
+
+    // Tasks from HW2 (problem 6)
+    tasks.push_back(PeriodicTask(40, 157, "t1"));
+    tasks.push_back(PeriodicTask(21, 21, "t2"));
+    tasks.push_back(PeriodicTask(14, 50, "t3"));
+    tasks.push_back(PeriodicTask(39, 159, "t4"));
+    tasks.push_back(PeriodicTask(10, 49, "t5"));
+    tasks.push_back(PeriodicTask(37, 40, "t6"));
+
+    TaskSet taskSet(tasks);
+
+    RMFFScheduler scheduler;
+    uint32_t numCpus = 3;
+    MultiprocessorSchedule schedule = scheduler.GenerateSchedule(taskSet, numCpus);
+
+    std::cout << schedule.AreDeadlinesMet(true) << std::endl;
+    std::cout << RMFFSchedulabilityTest(numCpus).RunTest(taskSet) << std::endl;
+    std::cout << RMFFUtilizationBoundTest(numCpus).RunTest(taskSet) << std::endl;
+}
+
 int main() {
     // example1();
     // example2();
     // example3();
-    example4();
+    // example4();
+    example5();
 }

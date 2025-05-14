@@ -1,14 +1,14 @@
-#include "SchedulerBasedTests.hpp"
+#include "UniprocessorSchedulerBasedTests.hpp"
 #include "RMScheduler.hpp"
 #include "DMScheduler.hpp"
 #include "EDFScheduler.hpp"
 #include "Simulator.hpp"
 
-void SchedulerBasedTest::CheckApplicability(const TaskSet &taskSet) const {
+void UniprocessorSchedulerBasedTest::CheckApplicability(const TaskSet &taskSet) const {
     (void)taskSet;
 }
 
-bool SchedulerBasedTest::RunTestImpl(const TaskSet &taskSet) const {
+bool UniprocessorSchedulerBasedTest::RunTestImpl(const TaskSet &taskSet) const {
     std::unique_ptr<UniprocessorSchedulingAlgorithm> alg = GetScheduler();
     Simulator simulator(alg.get()); // Pass raw pointer since simulator doesn't take ownership.
     simulator.SetPreemptionsAllowed(m_allowPreemptions);

@@ -2,14 +2,14 @@
 
 #include <memory>
 #include "FeasibilityTest.hpp"
-#include "UniProcessorSchedulingAlgorithm.hpp"
+#include "UniprocessorSchedulingAlgorithm.hpp"
 
 // Exact tests
 
-class SchedulerBasedTest : public FeasibilityTest {
+class UniprocessorSchedulerBasedTest : public FeasibilityTest {
 private:
-    bool m_allowPreemptions = true;
-    uint32_t m_preemptionDelay = 0;
+    bool m_allowPreemptions;
+    uint32_t m_preemptionDelay;
 
     void CheckApplicability(const TaskSet &taskSet) const override;
     bool RunTestImpl(const TaskSet &taskSet) const override;
@@ -17,33 +17,30 @@ private:
     virtual std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const = 0;
 
 public:
-    SchedulerBasedTest() = default;
-    SchedulerBasedTest(bool allowPreemptions)
-        : m_allowPreemptions(allowPreemptions) {};
-    SchedulerBasedTest(bool allowPreemptions, uint32_t preemptionDelay)
+    UniprocessorSchedulerBasedTest(bool allowPreemptions = true, uint32_t preemptionDelay = 0)
         : m_allowPreemptions(allowPreemptions), m_preemptionDelay(preemptionDelay) {};
 };
 
-class RMSchedulabilityTest : public SchedulerBasedTest {
+class RMSchedulabilityTest : public UniprocessorSchedulerBasedTest {
 private:
     std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const override;
 
 public:
-    using SchedulerBasedTest::SchedulerBasedTest;
+    using UniprocessorSchedulerBasedTest::UniprocessorSchedulerBasedTest;
 };
 
-class DMSchedulabilityTest : public SchedulerBasedTest {
+class DMSchedulabilityTest : public UniprocessorSchedulerBasedTest {
 private:
     std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const override;
 
 public:
-    using SchedulerBasedTest::SchedulerBasedTest;
+    using UniprocessorSchedulerBasedTest::UniprocessorSchedulerBasedTest;
 };
 
-class EDFSchedulabilityTest : public SchedulerBasedTest {
+class EDFSchedulabilityTest : public UniprocessorSchedulerBasedTest {
 private:
     std::unique_ptr<UniprocessorSchedulingAlgorithm> GetScheduler() const override;
 
 public:
-    using SchedulerBasedTest::SchedulerBasedTest;
+    using UniprocessorSchedulerBasedTest::UniprocessorSchedulerBasedTest;
 };

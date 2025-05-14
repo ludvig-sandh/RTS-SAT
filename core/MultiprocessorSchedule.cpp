@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 MultiprocessorSchedule::MultiprocessorSchedule(TaskSet taskSet, uint32_t numCpus) 
-    : m_taskSet(taskSet), m_numCpus(numCpus) {
+    : BaseSchedule(taskSet), m_numCpus(numCpus) {
     m_cpuSchedules.resize(m_numCpus, UniprocessorSchedule(m_taskSet));
 }
 
@@ -25,7 +25,26 @@ bool MultiprocessorSchedule::AreDeadlinesMet(bool shouldPrintMiss) const {
             std::cout << "(Deadlines missed in CPU number " << cpuIdx + 1 << "'s schedule)" << std::endl;
         }
     }
+    if (!IsComplete()) {
+        if (shouldPrintMiss) {
+            std::cout << "(Deadlines missed because at least one task wasn't scheduled at all. Some scheduling algorithms stop when they cannot schedule a task within deadlines)" << std::endl;
+        }
+
+        return false;
+    }
     return didFailForAnyCPU;
+}
+
+bool MultiprocessorSchedule::IsComplete() const {
+    // Find union of all scheduled task ids
+    std::unordered_set<std::string> scheduledIds;
+    for (uint32_t cpuIdx = 0; cpuIdx < m_numCpus; cpuIdx++) {
+        for (const TaskJob &job : m_cpuSchedules[cpuIdx].GetScheduledJobs()) {
+            scheduledIds.insert(job.taskId);
+        }
+    }
+
+    return (uint32_t)scheduledIds.size() == m_taskSet.GetNumTasks();
 }
 
 UniprocessorSchedule MultiprocessorSchedule::GetScheduleOfCore(uint32_t cpuIdx) {
