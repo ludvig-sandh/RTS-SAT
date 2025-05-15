@@ -93,14 +93,27 @@ private:
             m_charStrings[task.id] = std::vector<int8_t>();
             m_charStrings.at(task.id).reserve((std::size_t)m_hyperPeriod + 1);
 
+            if (m_shouldPrintSteps) {
+                std::cout << "Characteristic string for task " << task.id << ":" << std::endl;
+            }
+
             // Set an upper bound for t to prevent too long characteristic strings
             uint32_t max_t = m_hyperPeriod * 10;
             for (uint32_t t = 0; t < max_t; t++) {
                 int8_t sign = ComputeSign(task.C, task.T, t);
                 m_charStrings.at(task.id).push_back(sign);
+                
+                if (m_shouldPrintSteps) {
+                    std::cout << (sign == 1 ? "+" : (sign == 0 ? "0" : "-"));
+                }
+
                 if (t >= m_hyperPeriod && sign == 0) {
                     break; // We will never need more than up until the first zero after the interval we want to schedule
                 }
+            }
+
+            if (m_shouldPrintSteps) {
+                std::cout << std::endl << std::endl;
             }
         }
     }
