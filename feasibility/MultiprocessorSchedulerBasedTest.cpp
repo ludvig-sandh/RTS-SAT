@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Ludvig Sandh
+
 #include "MultiprocessorSchedulerBasedTest.hpp"
 #include "RMFFScheduler.hpp"
 #include "MultiprocessorSimulator.hpp"

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Ludvig Sandh
+
 #include <array>
 #include <cmath>
 #include <algorithm>

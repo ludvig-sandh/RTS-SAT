@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Ludvig Sandh
+
 #include "MultiprocessorSchedulingAlgorithm.hpp"
 
 MultiprocessorSchedule MultiprocessorSchedulingAlgorithm::GenerateSchedule(const TaskSet& taskSet, uint32_t numCpus) {

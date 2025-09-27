@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Ludvig Sandh
+
 #include "TaskSetGenerator.hpp"
 
 TaskSetGenerator::TaskSetGenerator(Config config) : m_config(config) {}

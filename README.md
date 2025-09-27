@@ -25,3 +25,6 @@ After exporting a schedule to csv, it can be visualized by running ```python sch
 - [X] Multi-core scheduling + feasibility tests
 - [ ] Compile to a static library
 - [X] Add sample code
+
+## License
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
