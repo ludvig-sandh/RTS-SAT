@@ -1,7 +1,7 @@
 #include <stdexcept>
-#include "FeasibilityTest.hpp"
+#include "BaseFeasibilityTest.hpp"
 
-bool FeasibilityTest::RunTest(const TaskSet& taskSet) {
+bool BaseFeasibilityTest::RunTest(const TaskSet& taskSet) {
     CheckApplicability(taskSet);
     return RunTestImpl(taskSet);
 }

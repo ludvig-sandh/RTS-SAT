@@ -3,25 +3,21 @@
 #include <string>
 #include "TaskSet.hpp"
 
-class FeasibilityTest {
+class BaseFeasibilityTest {
 public:
-    virtual ~FeasibilityTest() = default;
+    virtual ~BaseFeasibilityTest() = default;
 
-    // Template method: final to prevent override
     bool RunTest(const TaskSet& taskSet);
 
 protected:
     // Checks if this feasibility test is applicable to the given task set, and throws an exception otherwise
-    virtual void CheckApplicability(const TaskSet &taskSet) const = 0;
+    virtual void CheckApplicability(const TaskSet& taskSet) const = 0;
 
     // Runs the feasibility test on a given task set, given that it is applicable
-    virtual bool RunTestImpl(const TaskSet &taskSet) const = 0;
+    virtual bool RunTestImpl(const TaskSet& taskSet) const = 0;
 };
 
 class InvalidFeasibilityTestException : public std::exception {
-private:
-    std::string errorMessage;
-
 public:
     // Constructor that accepts a custom error message
     InvalidFeasibilityTestException(const std::string& message)
@@ -35,4 +31,7 @@ public:
     static InvalidFeasibilityTestException CreateNonSynchronousException();
     static InvalidFeasibilityTestException CreateNonImplicitDeadlinesException();
     static InvalidFeasibilityTestException CreateNonConstrainedDeadlinesException();
+
+private:
+    std::string errorMessage;
 };

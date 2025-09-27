@@ -16,7 +16,7 @@ double RMFFUtilizationBoundTest::GetUtilizationBound() const {
     return m_numCpus * (sqrt(2) - 1.0);
 }
 
-void RMFFUtilizationBoundTest::CheckApplicability(const TaskSet &taskSet) const {
+void RMFFUtilizationBoundTest::CheckApplicability(const TaskSet& taskSet) const {
     if (!taskSet.IsSynchronous()) {
         throw InvalidFeasibilityTestException::CreateNonSynchronousException();
     }
@@ -26,6 +26,6 @@ void RMFFUtilizationBoundTest::CheckApplicability(const TaskSet &taskSet) const 
     }
 }
 
-bool RMFFUtilizationBoundTest::RunTestImpl(const TaskSet &taskSet) const {
+bool RMFFUtilizationBoundTest::RunTestImpl(const TaskSet& taskSet) const {
     return taskSet.GetUtilization() <= GetUtilizationBound();
 }

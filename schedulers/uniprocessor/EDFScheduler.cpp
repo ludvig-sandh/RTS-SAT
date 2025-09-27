@@ -7,7 +7,7 @@ struct EarliestDeadlineComparator {
     }
 };
 
-UniprocessorSchedule EDFScheduler::GenerateSchedule(TaskSet& taskSet, bool allowPreemptions, uint32_t preemptionDelay) {
+UniprocessorSchedule EDFScheduler::GenerateSchedule(const TaskSet& taskSet, bool allowPreemptions, uint32_t preemptionDelay) {
     UniprocessorSchedule schedule = GenerateScheduleImpl(taskSet, EarliestDeadlineComparator(), allowPreemptions, preemptionDelay);
     schedule.Validate();
     return schedule;

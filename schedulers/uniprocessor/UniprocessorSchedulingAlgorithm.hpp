@@ -6,14 +6,17 @@
 #include "TaskSet.hpp"
 #include "UniprocessorSchedule.hpp"
 
+// Base class for all uniprocessor scheduling algorithms, both static and dynamic
 class UniprocessorSchedulingAlgorithm {
 public:
+    virtual ~UniprocessorSchedulingAlgorithm() = default;
+
     // Core method each algorithm must implement
-    virtual UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay = 0) = 0;
+    virtual UniprocessorSchedule GenerateSchedule(const TaskSet& taskSet, bool allowPreemptions, uint32_t preemptionDelay = 0) = 0;
 
 protected:
     template <typename Comparator>
-    UniprocessorSchedule GenerateScheduleImpl(TaskSet& taskSet, Comparator priorityComp, bool allowPreemptions, uint32_t preemptionDelay) {
+    UniprocessorSchedule GenerateScheduleImpl(const TaskSet& taskSet, Comparator priorityComp, bool allowPreemptions, uint32_t preemptionDelay) {
         UniprocessorSchedule schedule(taskSet);
     
         // Get all task instances (sorted by ascending arrival time)

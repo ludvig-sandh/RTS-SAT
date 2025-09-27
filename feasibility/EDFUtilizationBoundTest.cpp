@@ -1,6 +1,6 @@
 #include "EDFUtilizationBoundTest.hpp"
 
-void EDFUtilizationBoundTest::CheckApplicability(const TaskSet &taskSet) const {
+void EDFUtilizationBoundTest::CheckApplicability(const TaskSet& taskSet) const {
     if (!taskSet.IsSynchronous()) {
         throw InvalidFeasibilityTestException::CreateNonSynchronousException();
     }
@@ -10,6 +10,6 @@ void EDFUtilizationBoundTest::CheckApplicability(const TaskSet &taskSet) const {
     }
 }
 
-bool EDFUtilizationBoundTest::RunTestImpl(const TaskSet &taskSet) const {
+bool EDFUtilizationBoundTest::RunTestImpl(const TaskSet& taskSet) const {
     return taskSet.GetUtilization() <= 1.0;
 }

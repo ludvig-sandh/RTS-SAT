@@ -3,16 +3,17 @@
 
 void DMScheduler::AssignStaticPriorities(TaskSet& taskSet) const {
     // Get local copy of the tasks in the task set
-    std::vector<PeriodicTask> tasks = taskSet.GetCopyOfTasks();
+    TaskSet copiedTaskSet(taskSet);
 
     // Sort by period (descending), so lower T => higher priority
-    std::sort(tasks.begin(), tasks.end(),
+    std::sort(copiedTaskSet.begin(), copiedTaskSet.end(),
               [](const PeriodicTask& a, const PeriodicTask& b) {
                   return a.D > b.D;
               });
     
     // Assign priority (0 = lowest)
-    for (std::size_t i = 0; i < tasks.size(); ++i) {
-        taskSet.SetPriority(tasks[i].id, (uint32_t)i);
+    uint32_t i = 0;
+    for (auto it = copiedTaskSet.begin(); it != copiedTaskSet.end(); it++, i++) {
+        taskSet.SetPriority(it->id, i);
     }
 }

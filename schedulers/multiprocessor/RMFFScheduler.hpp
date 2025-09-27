@@ -5,5 +5,5 @@
 
 class RMFFScheduler : public MultiprocessorSchedulingAlgorithm {
 protected:
-    MultiprocessorSchedule GenerateScheduleImpl(TaskSet &taskSet, uint32_t numCpus) override;
+    MultiprocessorSchedule GenerateScheduleImpl(const TaskSet& taskSet, uint32_t numCpus) override;
 };

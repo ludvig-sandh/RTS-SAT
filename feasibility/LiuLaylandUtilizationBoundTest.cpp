@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include "LiuLaylandUtilizationBoundTest.hpp"
 
-void LiuLaylandUtilizationBoundTest::CheckApplicability(const TaskSet &taskSet) const {
+void LiuLaylandUtilizationBoundTest::CheckApplicability(const TaskSet& taskSet) const {
     if (!taskSet.IsSynchronous()) {
         throw InvalidFeasibilityTestException::CreateNonSynchronousException();
     }
@@ -12,7 +12,7 @@ void LiuLaylandUtilizationBoundTest::CheckApplicability(const TaskSet &taskSet) 
     }
 }
 
-bool LiuLaylandUtilizationBoundTest::RunTestImpl(const TaskSet &taskSet) const {
+bool LiuLaylandUtilizationBoundTest::RunTestImpl(const TaskSet& taskSet) const {
     uint32_t numTasks = taskSet.GetNumTasks();
     return taskSet.GetUtilization() <= GetUtilizationBound(numTasks);
 }

@@ -3,12 +3,12 @@
 #include <iostream>
 #include <stdexcept>
 
-MultiprocessorSchedule::MultiprocessorSchedule(TaskSet taskSet, uint32_t numCpus) 
+MultiprocessorSchedule::MultiprocessorSchedule(const TaskSet& taskSet, uint32_t numCpus) 
     : BaseSchedule(taskSet), m_numCpus(numCpus) {
     m_cpuSchedules.resize(m_numCpus, UniprocessorSchedule(m_taskSet));
 }
 
-void MultiprocessorSchedule::AddTaskJob(TaskJob taskJob, uint32_t cpuIdx) {
+void MultiprocessorSchedule::AddTaskJob(const TaskJob& taskJob, uint32_t cpuIdx) {
     if (cpuIdx >= m_numCpus) {
         const std::string msg = "Cannot add task to cpu number " + std::to_string(cpuIdx + 1) + " when the multiprocessor schedule only has " + std::to_string(m_numCpus) + " CPUs.";
         throw std::invalid_argument(msg);
@@ -39,7 +39,7 @@ bool MultiprocessorSchedule::IsComplete() const {
     // Find union of all scheduled task ids
     std::unordered_set<std::string> scheduledIds;
     for (uint32_t cpuIdx = 0; cpuIdx < m_numCpus; cpuIdx++) {
-        for (const TaskJob &job : m_cpuSchedules[cpuIdx].GetScheduledJobs()) {
+        for (const TaskJob& job : m_cpuSchedules[cpuIdx]) {
             scheduledIds.insert(job.taskId);
         }
     }
@@ -47,7 +47,7 @@ bool MultiprocessorSchedule::IsComplete() const {
     return (uint32_t)scheduledIds.size() == m_taskSet.GetNumTasks();
 }
 
-UniprocessorSchedule MultiprocessorSchedule::GetScheduleOfCore(uint32_t cpuIdx) {
+const UniprocessorSchedule& MultiprocessorSchedule::GetScheduleOfCore(uint32_t cpuIdx) {
     if (cpuIdx >= m_numCpus) {
         const std::string msg = "Cannot get schedule of cpu number " + std::to_string(cpuIdx + 1) + " when the multiprocessor schedule only has " + std::to_string(m_numCpus) + " CPUs.";
         throw std::invalid_argument(msg);
@@ -55,7 +55,7 @@ UniprocessorSchedule MultiprocessorSchedule::GetScheduleOfCore(uint32_t cpuIdx) 
     return m_cpuSchedules[cpuIdx];
 }
 
-void MultiprocessorSchedule::SetScheduleOfCore(UniprocessorSchedule schedule, uint32_t cpuIdx) {
+void MultiprocessorSchedule::SetScheduleOfCore(const UniprocessorSchedule& schedule, uint32_t cpuIdx) {
     if (cpuIdx >= m_numCpus) {
         const std::string msg = "Cannot get schedule of cpu number " + std::to_string(cpuIdx + 1) + " when the multiprocessor schedule only has " + std::to_string(m_numCpus) + " CPUs.";
         throw std::invalid_argument(msg);
@@ -65,7 +65,13 @@ void MultiprocessorSchedule::SetScheduleOfCore(UniprocessorSchedule schedule, ui
 
 void MultiprocessorSchedule::Validate() const {
     for (uint32_t cpuIdx = 0; cpuIdx < m_numCpus; cpuIdx++) {
-        m_cpuSchedules[cpuIdx].Validate();
+        try {
+            m_cpuSchedules[cpuIdx].Validate();
+        }catch (InvalidScheduleException& e) {
+            // Append error information before rethrowing
+            e.SpecifyCPU(cpuIdx + 1);
+            throw e;
+        }
     }
 }
 

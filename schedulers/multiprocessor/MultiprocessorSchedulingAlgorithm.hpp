@@ -9,8 +9,8 @@
 class MultiprocessorSchedulingAlgorithm {
 public:
     // Core method each algorithm must implement
-    MultiprocessorSchedule GenerateSchedule(TaskSet &taskSet, uint32_t numCpus);
+    MultiprocessorSchedule GenerateSchedule(const TaskSet& taskSet, uint32_t numCpus);
 
 protected:
-    virtual MultiprocessorSchedule GenerateScheduleImpl(TaskSet &taskSet, uint32_t numCpus) = 0;
+    virtual MultiprocessorSchedule GenerateScheduleImpl(const TaskSet& taskSet, uint32_t numCpus) = 0;
 };

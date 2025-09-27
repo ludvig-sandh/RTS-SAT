@@ -11,12 +11,13 @@ bool StaticPrioritiesComparator::operator()(const TaskJob& a, const TaskJob& b) 
     return a.instanceNumber > b.instanceNumber;
 }
 
-UniprocessorSchedule StaticPriorityScheduler::GenerateSchedule(TaskSet &taskSet, bool allowPreemptions, uint32_t preemptionDelay) {
+UniprocessorSchedule StaticPriorityScheduler::GenerateSchedule(const TaskSet& taskSet, bool allowPreemptions, uint32_t preemptionDelay) {
     // Assign priorities to each task in the set
-    AssignStaticPriorities(taskSet);
+    TaskSet mutableTaskSet(taskSet);
+    AssignStaticPriorities(mutableTaskSet);
 
-    StaticPrioritiesComparator priorityComparator(taskSet);
-    UniprocessorSchedule schedule = GenerateScheduleImpl(taskSet, priorityComparator, allowPreemptions, preemptionDelay);
+    StaticPrioritiesComparator priorityComparator(mutableTaskSet);
+    UniprocessorSchedule schedule = GenerateScheduleImpl(mutableTaskSet, priorityComparator, allowPreemptions, preemptionDelay);
     schedule.Validate();
     return schedule;
 }

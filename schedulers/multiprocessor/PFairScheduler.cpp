@@ -14,7 +14,7 @@ private:
     // The task set total utilization must not differ from m by more than this (m=num cpus)
     const double kUtilizationEpsilon = 0.000001;
 
-    TaskSet &m_taskSet;
+    TaskSet m_taskSet;
     uint32_t m_numCpus, m_hyperPeriod, m_numTasks;
     bool m_shouldPrintSteps;
 
@@ -31,7 +31,7 @@ private:
     std::unordered_map<std::string, std::vector<int8_t>> m_charStrings;
 
 public:
-    ScheduleBuilder(TaskSet &taskSet, uint32_t numCpus, bool shouldPrintSteps = false)
+    ScheduleBuilder(const TaskSet& taskSet, uint32_t numCpus, bool shouldPrintSteps = false)
         : m_taskSet(taskSet), m_numCpus(numCpus), m_shouldPrintSteps(shouldPrintSteps), m_multiSchedule(taskSet, numCpus) {}
 
     // Goes through all steps to create and return a P-Fair scheduling algorithm
@@ -71,7 +71,7 @@ private:
         }
 
         // Shortcut to access all task ids in the task set
-        for (auto &task : m_taskSet.GetTasks()) {
+        for (auto& task : m_taskSet) {
             m_allTaskIds.push_back(task.id);
         }
 
@@ -88,7 +88,7 @@ private:
 
     // Compute the characteristic string for each task
     void ComputeCharacteristicStrings() {
-        for (const PeriodicTask &task : m_taskSet.GetTasks()) {
+        for (const PeriodicTask& task : m_taskSet) {
             // Reserve space for lower bound of string size
             m_charStrings[task.id] = std::vector<int8_t>();
             m_charStrings.at(task.id).reserve((std::size_t)m_hyperPeriod + 1);
@@ -164,7 +164,7 @@ private:
     }
 
     // Returns all tasks that should be scheduled
-    std::vector<std::string> GetTasksToSchedule(std::vector<std::string> &urgent, std::vector<std::string> &contending) {
+    std::vector<std::string> GetTasksToSchedule(std::vector<std::string>& urgent, std::vector<std::string>& contending) {
         std::vector<std::string> taskIdsToSchedule = urgent;
         taskIdsToSchedule.insert(taskIdsToSchedule.end(), contending.begin(), contending.end());
         
@@ -176,7 +176,7 @@ private:
     }
 
     // Returns all tasks that should not be scheduled
-    std::vector<std::string> GetTasksNotToSchedule(std::vector<std::string> &tnegru, std::vector<std::string> &contending) {
+    std::vector<std::string> GetTasksNotToSchedule(std::vector<std::string>& tnegru, std::vector<std::string>& contending) {
         std::vector<std::string> taskIdsNotToSchedule = tnegru;
         taskIdsNotToSchedule.insert(taskIdsNotToSchedule.begin(), contending.begin(), contending.end());
         std::reverse(taskIdsNotToSchedule.begin(), taskIdsNotToSchedule.end());
@@ -187,10 +187,10 @@ private:
     }
 
     // Creates the jobs and adds them to the multiprocessor schedule
-    void ScheduleTasks(std::vector<std::string> &taskIdsToSchedule, uint32_t t) {
+    void ScheduleTasks(std::vector<std::string>& taskIdsToSchedule, uint32_t t) {
         for (uint32_t cpuIdx = 0; cpuIdx < m_numCpus; cpuIdx++) {
             std::string taskId = taskIdsToSchedule[cpuIdx];
-            const PeriodicTask &task = m_taskSet.GetTask(taskId);
+            const PeriodicTask& task = m_taskSet.GetTask(taskId);
             uint32_t instanceNumber = t / task.T;
             uint32_t arrival = instanceNumber * task.T;
             uint32_t deadline = (instanceNumber + 1) * task.T;
@@ -202,28 +202,28 @@ private:
     }
 
     // Fills the lag table at time t + 1 (next row)
-    void FillNewLagTableRow(std::vector<std::string> &taskIdsToSchedule, std::vector<std::string> &taskIdsNotToSchedule, uint32_t t) {
+    void FillNewLagTableRow(std::vector<std::string>& taskIdsToSchedule, std::vector<std::string>& taskIdsNotToSchedule, uint32_t t) {
         for (std::string taskId : taskIdsToSchedule) {
             // For each scheduled task, decrease table value by: period - execution time
-            const PeriodicTask &task = m_taskSet.GetTask(taskId);
+            const PeriodicTask& task = m_taskSet.GetTask(taskId);
             m_lagTable[t + 1][taskId] = m_lagTable[t].at(taskId) - static_cast<int32_t>(task.T - task.C);
         }
         for (std::string taskId : taskIdsNotToSchedule) {
             // For each task not scheduled, increase table value by: execution time
-            const PeriodicTask &task = m_taskSet.GetTask(taskId);
+            const PeriodicTask& task = m_taskSet.GetTask(taskId);
             m_lagTable[t + 1][taskId] = m_lagTable[t].at(taskId) + static_cast<int32_t>(task.C);
         }
     }
 
     // Displays information about timestep t in the console.
     void PrintStep(uint32_t t,
-                   const std::vector<std::string> &urgent,
-                   const std::vector<std::string> &tnegru,
-                   const std::vector<std::string> &contending,
-                   const std::vector<std::string> &toSchedule) const {
+                   const std::vector<std::string>& urgent,
+                   const std::vector<std::string>& tnegru,
+                   const std::vector<std::string>& contending,
+                   const std::vector<std::string>& toSchedule) const {
 
         // Helps print a list of task ids.
-        auto PrintList = [](const std::string &label, const std::vector<std::string> &list, const std::string &end = "\n", const std::string &sep = " ") {
+        auto PrintList = [](const std::string& label, const std::vector<std::string>& list, const std::string& end = "\n", const std::string& sep = " ") {
             std::cout << label;
             for (size_t i = 0; i < list.size(); ++i) {
                 std::cout << list[i];
@@ -256,7 +256,7 @@ private:
 };
 } // unnamed namespace
 
-MultiprocessorSchedule PFairScheduler::GenerateScheduleImpl(TaskSet &taskSet, uint32_t numCpus) {
+MultiprocessorSchedule PFairScheduler::GenerateScheduleImpl(const TaskSet& taskSet, uint32_t numCpus) {
     ScheduleBuilder builder(taskSet, numCpus, m_shouldPrintSteps);
     return builder.Build();
 }

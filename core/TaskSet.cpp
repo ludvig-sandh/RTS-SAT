@@ -1,60 +1,49 @@
 #include <numeric>
 #include <algorithm>
 #include <iostream>
+#include <ranges>
+#include <vector>
 #include "TaskSet.hpp"
 
-TaskSet::TaskSet(std::vector<PeriodicTask> tasks) {
-    if (tasks.size() == 0) {
-        throw std::invalid_argument("Cannot create a task set out of zero tasks.");
-    }
+TaskSet TaskSet::GetHigherPriorityTasks(uint32_t prio) const {
+    auto filtered_view = m_tasks
+        | std::views::filter([prio](const PeriodicTask& task) {
+            return task.prio > prio;
+        });
 
-    m_tasks = tasks;
+    std::vector<PeriodicTask> tasks(filtered_view.begin(), filtered_view.end());
+    return TaskSet(tasks);
 }
 
-const std::vector<PeriodicTask> &TaskSet::GetTasks() const {
-    return m_tasks;
+void TaskSet::SetPriority(const std::string& taskId, uint32_t prio) {
+    // Avoid code duplication by calling const helper function.
+    // Since this is a non-const member function, it is safe to cast away constness.
+    PeriodicTask& foundTask = const_cast<PeriodicTask&>(GetTask(taskId));
+    foundTask.prio = prio;
 }
 
-std::vector<PeriodicTask> TaskSet::GetCopyOfTasks() {
-    return m_tasks;
-}
-
-std::vector<PeriodicTask> TaskSet::GetHigherPriorityTasks(uint32_t prio) const {
-    std::vector<PeriodicTask> tasks;
-    for (const PeriodicTask &task : m_tasks) {
-        if (task.prio > prio) {
-            tasks.push_back(task);
-        }
-    }
-    return tasks;
-}
-
-void TaskSet::SetPriority(std::string taskId, uint32_t prio) {
-    for (PeriodicTask &task : m_tasks) {
-        if (task.id == taskId) {
-            task.prio = prio;
-            return;
-        }
-    }
-}
-
-const PeriodicTask &TaskSet::GetTask(std::string taskId) const {
-    for (const PeriodicTask &task : m_tasks) {
-        if (task.id == taskId) {
-            return task;
-        }
+const PeriodicTask& TaskSet::GetTask(const std::string& taskId) const {
+    auto match = [&taskId](const PeriodicTask& task) {
+        return task.id == taskId;
+    };
+    auto it = std::ranges::find_if(m_tasks, match);
+    if (it != m_tasks.end()) {
+        return *it;
     }
     
-    throw std::invalid_argument("Cannot run GetTask() with a taskId that doesn't exist in the task set.");
+    throw std::invalid_argument("Could not find task with id " + taskId + " in the task set.");
 }
 
-uint32_t TaskSet::GetNumTasks() const {
-    return static_cast<uint32_t>(m_tasks.size());
+size_t TaskSet::GetNumTasks() const {
+    return m_tasks.size();
 }
 
 uint32_t TaskSet::GetHyperPeriod() const {
+    if (m_tasks.empty()) {
+        throw std::domain_error("Cannot compute hyperperiod from en empty task set.");
+    }
     uint32_t current_lcm = 1;
-    for (const PeriodicTask &task : m_tasks) {
+    for (const PeriodicTask& task : m_tasks) {
         current_lcm = std::lcm(current_lcm, task.T);
     }
     return current_lcm;
@@ -62,10 +51,16 @@ uint32_t TaskSet::GetHyperPeriod() const {
 
 std::deque<TaskJob> TaskSet::GetAllTaskJobs() const {
     std::deque<TaskJob> instances;
+
+    // Safety guard for empty task set
+    if (m_tasks.empty()) {
+        return instances;
+    }
+
     uint32_t hyperPeriod = GetHyperPeriod();
 
     // For each task, generate all the instances within the hyperperiod
-    for (const PeriodicTask &task : m_tasks) {
+    for (const PeriodicTask& task : m_tasks) {
         uint32_t numInstances = hyperPeriod / task.T;
         for (uint32_t instanceNumber = 1; instanceNumber < numInstances + 1; instanceNumber++) {
             TaskJob instance(
@@ -81,19 +76,25 @@ std::deque<TaskJob> TaskSet::GetAllTaskJobs() const {
 
     // Sort by arrival time (ascending)
     std::sort(instances.begin(), instances.end(),
-              [](const TaskJob& a, const TaskJob& b) {
-                  return a.arrival < b.arrival;
-              });
+        [](const TaskJob& a, const TaskJob& b) {
+            return a.arrival < b.arrival;
+        });
 
     return instances;
 }
 
 std::unordered_set<uint32_t> TaskSet::GetAbsoluteDeadlines() const {
     std::unordered_set<uint32_t> deadlines;
+
+    // Safety guard for empty task set
+    if (m_tasks.empty()) {
+        return deadlines;
+    }
+
     uint32_t hyperPeriod = GetHyperPeriod();
 
     // For each task, generate all absolute deadlines
-    for (const PeriodicTask &task : m_tasks) {
+    for (const PeriodicTask& task : m_tasks) {
         uint32_t numInstances = hyperPeriod / task.T;
         for (uint32_t instanceNumber = 1; instanceNumber < numInstances + 1; instanceNumber++) {
             deadlines.insert(task.O + (instanceNumber - 1) * task.T + task.D); // absolute deadline
@@ -104,52 +105,91 @@ std::unordered_set<uint32_t> TaskSet::GetAbsoluteDeadlines() const {
 }
 
 void TaskSet::PrintPriorities() const {
-    std::cout << "Printing task priorities (higher number = higher priority)" << std::endl;
-    for (const PeriodicTask &task : m_tasks) {
-        std::cout << "Task id " << task.id << " has priority " << task.prio << std::endl;
+    if (m_tasks.empty()) {
+        std::cout << "Printing task priorities (higher number = higher priority)\n\tEmpty task set.\n";
+        return;
     }
-    std::cout << std::endl;
+    std::cout << "Printing task priorities (higher number = higher priority)\n";
+    for (const PeriodicTask& task : m_tasks) {
+        std::cout << "Task id " << task.id << " has priority " << task.prio << "\n";
+    }
+    std::cout << "\n";
 }
 
 void TaskSet::Print() const {
-    std::cout << "Printing task set" << std::endl;
-    for (const PeriodicTask &task : m_tasks) {
-        std::cout << "Task id " << task.id << ", C=" << task.C << ", D=" << task.D << ", T=" << task.T << std::endl;
+    if (m_tasks.empty()) {
+        std::cout << "Printing task set (higher number = higher priority)\n\tEmpty task set.\n";
+        return;
     }
-    std::cout << std::endl;
+    std::cout << "Printing task set\n";
+    for (const PeriodicTask& task : m_tasks) {
+        PrintPeriodicTask(task);
+    }
+    std::cout << "\n";
 }
 
 bool TaskSet::IsSynchronous() const {
+    // Only compute the result once
+    if (m_cachedIsSynchronous.has_value()) {
+        return *m_cachedIsSynchronous;
+    }
+
+    bool isSynchronous = true;
     for (uint32_t i = 1; i < GetNumTasks(); i++) {
         if (m_tasks[i].O != m_tasks[0].O) {
-            return false;
+            isSynchronous = false;
+            break;
         }
     }
-    return true;
+
+    m_cachedIsSynchronous = isSynchronous;
+    return isSynchronous;
 }
 
 bool TaskSet::HasImplicitDeadlines() const {
-    for (const PeriodicTask &task : m_tasks) {
+    if (m_cachedHasImplicitDeadlines.has_value()) {
+        return *m_cachedHasImplicitDeadlines;
+    }
+
+    bool result = true;
+    for (const PeriodicTask& task : m_tasks) {
         if (task.D != task.T) {
-            return false;
+            result = false;
+            break;
         }
     }
-    return true;
+
+    m_cachedHasImplicitDeadlines = result;
+    return result;
 }
 
 bool TaskSet::HasConstrainedDeadlines() const {
-    for (const PeriodicTask &task : m_tasks) {
+    if (m_cachedHasConstrainedDeadlines.has_value()) {
+        return *m_cachedHasConstrainedDeadlines;
+    }
+
+    bool result = true;
+    for (const PeriodicTask& task : m_tasks) {
         if (task.D > task.T) {
-            return false;
+            result = false;
+            break;
         }
     }
-    return true;
+    
+    m_cachedHasConstrainedDeadlines = result;
+    return result;
 }
 
 double TaskSet::GetUtilization() const {
+    if (m_cachedUtilization.has_value()) {
+        return *m_cachedUtilization;
+    }
+
     double utilization = 0.0;
-    for (const PeriodicTask &task : m_tasks) {
+    for (const PeriodicTask& task : m_tasks) {
         utilization += static_cast<double>(task.C) / static_cast<double>(task.T);
     }
+
+    m_cachedUtilization = utilization;
     return utilization;
 }

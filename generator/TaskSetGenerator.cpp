@@ -14,5 +14,5 @@ TaskSet TaskSetGenerator::Generate() {
         PeriodicTask task(C, D, T, std::to_string(i + 1));
         tasks.push_back(task);
     }
-    return tasks;
+    return TaskSet(tasks);
 }

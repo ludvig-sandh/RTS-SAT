@@ -9,33 +9,24 @@
 #include "BaseSchedule.hpp"
 
 class UniprocessorSchedule : public BaseSchedule {
-private:
-    std::vector<TaskJob> m_scheduledJobs;
 public:
-    UniprocessorSchedule(TaskSet taskset) : BaseSchedule(taskset) {};
-    void AddTaskJob(TaskJob taskJob);
-    bool AreDeadlinesMet(bool shouldPrintMiss) const override;
+    using iterator = std::vector<TaskJob>::iterator;
+    using const_iterator = std::vector<TaskJob>::const_iterator;
 
-    // Returns a reference to the scheduled tasks
-    const std::vector<TaskJob> &GetScheduledJobs() const;
+    iterator begin() { return m_scheduledJobs.begin(); }
+    iterator end() { return m_scheduledJobs.end(); }
+    const_iterator begin() const { return m_scheduledJobs.begin(); }
+    const_iterator end() const { return m_scheduledJobs.end(); }
+
+    explicit UniprocessorSchedule(const TaskSet& taskset) : BaseSchedule(taskset) {};
+    void AddTaskJob(const TaskJob& taskJob);
+    bool AreDeadlinesMet(bool shouldPrintMiss) const override;
 
     // Checks that the schedule is valid (i.e. no two tasks running simultaneously etc.)
     void Validate() const override;
     void Print() const override;
     void ExportToCsv(const std::string& filename = "schedule.csv") const;
-};
 
-class InvalidScheduleException : public std::exception {
 private:
-    std::string errorMessage;
-
-public:
-    // Constructor that accepts a custom error message
-    InvalidScheduleException(const std::string& message)
-        : errorMessage(message) {}
-
-    // Override the what() method to return the custom error message
-    const char* what() const noexcept override {
-        return errorMessage.c_str();
-    }
+    std::vector<TaskJob> m_scheduledJobs;
 };

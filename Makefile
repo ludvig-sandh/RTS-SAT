@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Icore -Ischedulers/uniprocessor -Ischedulers/multiprocessor -Isim -Ifeasibility -Igenerator
+CXXFLAGS := -std=c++23 -Wall -Wextra -Icore -Ischedulers/uniprocessor -Ischedulers/multiprocessor -Isim -Ifeasibility -Igenerator
 DEBUG_FLAGS := -g -O0 -fno-inline -fno-omit-frame-pointer -ggdb -fno-elide-constructors
 
 # Output folder
@@ -58,7 +58,7 @@ $(TARGET): $(OBJS)
 
 
 # ==== Build test binary ====
-test: CXXFLAGS += $(GTEST_INCLUDES) -pthread
+test: CXXFLAGS += $(GTEST_INCLUDES) $(DEBUG_FLAGS) -pthread
 test: $(TEST_TARGET)
 	@if [ -f $(TEST_TARGET) ]; then ./$(TEST_TARGET); fi
 

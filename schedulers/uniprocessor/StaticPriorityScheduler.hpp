@@ -11,9 +11,11 @@ struct StaticPrioritiesComparator {
     bool operator()(const TaskJob& a, const TaskJob& b) const;
 };
 
+// Base class for all static priority uniprocessor schedulers
 class StaticPriorityScheduler : public UniprocessorSchedulingAlgorithm {
 public:
-    UniprocessorSchedule GenerateSchedule(TaskSet &taskSet, bool allowPreemptions = true, uint32_t preemptionDelay = 0) override;
+    virtual ~StaticPriorityScheduler() = default;
+    UniprocessorSchedule GenerateSchedule(const TaskSet& taskSet, bool allowPreemptions = true, uint32_t preemptionDelay = 0) override;
     
     virtual void AssignStaticPriorities(TaskSet& taskSet) const = 0;
 };

@@ -1,19 +1,21 @@
 #include <iostream>
 #include <numeric>
 #include <string>
+#include <cassert>
 
-#include "Simulator.hpp"
+#include "UniprocessorSimulator.hpp"
 #include "RMScheduler.hpp"
 #include "DMScheduler.hpp"
 #include "EDFScheduler.hpp"
 #include "TaskSetGenerator.hpp"
-#include "UniprocessorSchedulerBasedTests.hpp"
-#include "MultiprocessorSchedulerBasedTests.hpp"
+#include "UniprocessorSchedulerBasedTest.hpp"
+#include "MultiprocessorSchedulerBasedTest.hpp"
 #include "ResponseTimeAnalysisTest.hpp"
 #include "LiuLaylandUtilizationBoundTest.hpp"
 #include "PFairScheduler.hpp"
 #include "RMFFScheduler.hpp"
 #include "RMFFUtilizationBoundTest.hpp"
+#include "MultiprocessorSchedule.hpp"
 
 // Returns a sample task set
 TaskSet getSampleTaskSet1() {
@@ -29,21 +31,21 @@ void example1() {
     RMScheduler scheduler;
 
     // Configure the simulator
-    Simulator simulator(&scheduler);
-    simulator.SetPreemptionsAllowed(true);
+    UniprocessorSimulator simulator(&scheduler);
 
     // Select a task set
     TaskSet taskSet = getSampleTaskSet1();
-    taskSet.Print(); // Display task set in the terminal
+    taskSet.Print(); // Display task set
 
     // Get the schedule by running the simulator
     UniprocessorSchedule schedule = simulator.run(taskSet);
     
-    // Print the scheduled jobs in the terminal
+    // Print the scheduled jobs
     schedule.Print();
 
     // Check deadlines
-    if (schedule.AreDeadlinesMet(true)) { // Since we send true here, this function will print any missed tasks
+    std::cout << "Checking if deadlines are respected..." << std::endl;
+    if (schedule.AreDeadlinesMet(true)) { // Since we provide true value here, this function will print any missed tasks
         std::cout << "No task missed their deadline.\n" << std::endl;
     }
 
@@ -57,8 +59,7 @@ void example2() {
     DMScheduler scheduler;
 
     // Configure the simulator
-    Simulator simulator(&scheduler);
-    simulator.SetPreemptionsAllowed(true);
+    UniprocessorSimulator simulator(&scheduler);
     
     // Create a configuration for the task set generator
     TaskSetGenerator::Config config;
@@ -101,26 +102,26 @@ void example3() {
     std::cout << "Liu & Layland's utilization bound test " << resultString << std::endl;
 }
 
+// Simulates a P-Fair scheduling algorithm on a set of periodic tasks
 void example4() {
-    std::vector<PeriodicTask> tasks;
-
-    // Tasks from paper:
-    // tasks.push_back(PeriodicTask(1, 3, 3, "v"));
-    // tasks.push_back(PeriodicTask(2, 4, 4, "w"));
-    // tasks.push_back(PeriodicTask(5, 7, 7, "x"));
-    // tasks.push_back(PeriodicTask(8, 11, 11, "y"));
-    // tasks.push_back(PeriodicTask(335, 462, 462, "z"));
-
-    // Tasks from HW2:
-    tasks.push_back(PeriodicTask(4, 8, 8, "1"));
-    tasks.push_back(PeriodicTask(1, 4, 4, "2"));
-    tasks.push_back(PeriodicTask(7, 8, 8, "3"));
-    tasks.push_back(PeriodicTask(3, 8, 8, "4"));
-
+    // Example tasks from P-Fair scheduling paper:
+    std::vector<PeriodicTask> tasks = {
+        PeriodicTask(1, 3, 3, "v"),
+        PeriodicTask(2, 4, 4, "w"),
+        PeriodicTask(5, 7, 7, "x"),
+        PeriodicTask(8, 11, 11, "y"),
+        PeriodicTask(335, 462, 462, "z")
+    };
     TaskSet taskSet(tasks);
-
-    PFairScheduler scheduler(true);
-    MultiprocessorSchedule schedule = scheduler.GenerateSchedule(taskSet, 2);
+    
+    // Specify number of cpu:s used in the simulator
+    MultiprocessorSimulator::Config simConfig;
+    simConfig.numCpus = 2;
+    
+    // Run the scheduler
+    PFairScheduler scheduler(true); // shouldPrintSteps = true
+    MultiprocessorSimulator simulator(&scheduler, simConfig);
+    MultiprocessorSchedule schedule = simulator.run(taskSet);
 }
 
 void example5() {
@@ -146,9 +147,9 @@ void example5() {
 }
 
 int main() {
-    // example1();
-    // example2();
-    // example3();
-    // example4();
+    example1();
+    example2();
+    example3();
+    example4();
     example5();
 }

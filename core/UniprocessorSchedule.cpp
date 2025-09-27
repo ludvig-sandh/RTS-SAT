@@ -5,45 +5,41 @@
 #include "UniprocessorSchedule.hpp"
 #include "Task.hpp"
 
-void UniprocessorSchedule::AddTaskJob(TaskJob taskJob) {
+void UniprocessorSchedule::AddTaskJob(const TaskJob& taskJob) {
     m_scheduledJobs.push_back(taskJob);
 }
 
 bool UniprocessorSchedule::AreDeadlinesMet(bool shouldPrintMiss) const {
     // Check if all jobs meet the deadlines of the tasks they belong to
-    for (const TaskJob &taskJob : m_scheduledJobs) {
-        if (taskJob.end > taskJob.deadline) {
-            if (shouldPrintMiss) {
-                std::cout << "The following task job didn't meet its deadline:" << std::endl;
-                taskJob.Print();
-            }
-            return false;
+    for (const TaskJob& taskJob : m_scheduledJobs) {
+        if (taskJob.end <= taskJob.deadline) {
+            continue; // Met its deadline
         }
+        if (shouldPrintMiss) {
+            std::cout << "The following task job didn't meet its deadline:\n";
+            taskJob.Print();
+        }
+        return false;
     }
-    
     return true;
 }
 
-const std::vector<TaskJob> &UniprocessorSchedule::GetScheduledJobs() const {
-    return m_scheduledJobs;
-}
-
 void UniprocessorSchedule::Validate() const {
-    const TaskJob *lastJob = nullptr;
     uint32_t hyperPeriod = m_taskSet.GetHyperPeriod();
-
+    
     if (hyperPeriod == 0) {
         throw InvalidScheduleException("Validation error: Hyperperiod is invalid (zero).");
     }
-
-    for (const TaskJob &job : m_scheduledJobs) {
+    
+    const TaskJob *lastJob = nullptr;
+    for (const TaskJob& job : m_scheduledJobs) {
         if (job.start > job.end) {
             throw InvalidScheduleException("Validation error: An instance of task " + job.taskId + " has a start time after its end time.");
         }
-        if (lastJob && job.end < lastJob->start) {
+        if (lastJob != nullptr && job.end < lastJob->start) {
             throw InvalidScheduleException("Validation error: Schedule wasn't ordered by time");
         }
-        if (lastJob && job.start < lastJob->end) {
+        if (lastJob != nullptr && job.start < lastJob->end) {
             throw InvalidScheduleException("Validation error: Instances of tasks " + job.taskId + " and " + lastJob->taskId + " executed at the same time.");
         }
 
@@ -52,21 +48,21 @@ void UniprocessorSchedule::Validate() const {
 }
 
 void UniprocessorSchedule::Print() const {
-    std::cout << "Printing schedule" << std::endl;
-    for (const TaskJob &job : m_scheduledJobs) {
+    std::cout << "Printing schedule" << "\n";
+    for (const TaskJob& job : m_scheduledJobs) {
         std::cout << "Task " << job.taskId << " scheduled from " << job.start << " to " << job.end << " (instance " << job.instanceNumber << ")";
         if (job.end > job.deadline) {
             std::cout << " (missed deadline)";
         }
-        std::cout << std::endl;
+        std::cout << "\n";
     }
-    std::cout << std::endl;
+    std::cout << "\n";
 }
 
 void UniprocessorSchedule::ExportToCsv(const std::string& filename) const {
     std::ofstream file(filename);
     file << "arrival,deadline,instanceNumber,taskId,remainingTime,start,end,priority,executionTime,period,offset\n";
-    for (const TaskJob &job : m_scheduledJobs) {
+    for (const TaskJob& job : m_scheduledJobs) {
         file << std::to_string(job.arrival) << ",";
         file << std::to_string(job.deadline) << ",";
         file << std::to_string(job.instanceNumber) << ",";

@@ -9,14 +9,14 @@ private:
 public:
     PFairScheduler(bool shouldPrintSteps = false) : m_shouldPrintSteps(shouldPrintSteps) {};
 protected:
-    MultiprocessorSchedule GenerateScheduleImpl(TaskSet &taskSet, uint32_t numCpus) override;
+    MultiprocessorSchedule GenerateScheduleImpl(const TaskSet& taskSet, uint32_t numCpus) override;
 };
 
 struct CharStringComparator {
-    const std::unordered_map<std::string, std::vector<int8_t>> &charString;
+    const std::unordered_map<std::string, std::vector<int8_t>>& charString;
     const uint32_t t;
 
-    CharStringComparator(const std::unordered_map<std::string, std::vector<int8_t>> &charString, uint32_t t) : charString(charString), t(t) {}
+    CharStringComparator(const std::unordered_map<std::string, std::vector<int8_t>>& charString, uint32_t t) : charString(charString), t(t) {}
 
     // Should return true if a should come before b
     bool operator()(std::string a, std::string b) const {

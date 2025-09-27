@@ -34,11 +34,6 @@ TEST(core, SetPriority) {
     EXPECT_EQ(taskSet.GetTask("ABC").prio, (uint32_t)15);
 }
 
-TEST(core, EmptyTaskSet) {
-    std::vector<PeriodicTask> tasks;
-    EXPECT_THROW(TaskSet taskSet(tasks), std::invalid_argument);
-}
-
 TEST(core, HyperPeriod1) {
     std::vector<PeriodicTask> tasks = {
         PeriodicTask(1, 1, 3, "3"),
@@ -72,6 +67,17 @@ TEST(core, HyperPeriod3) {
     };
     TaskSet taskSet(tasks);
     EXPECT_EQ(taskSet.GetHyperPeriod(), (uint32_t)6);
+}
+
+TEST(core, EmptyTaskSetNoThrow) {
+    std::vector<PeriodicTask> tasks;
+    EXPECT_NO_THROW(TaskSet taskSet(tasks));
+}
+
+TEST(core, HyperPeriodEmptyTaskSetThrows) {
+    std::vector<PeriodicTask> tasks;
+    TaskSet empty(tasks);
+    EXPECT_THROW(empty.GetHyperPeriod(), std::domain_error);
 }
 
 TEST(core, ZeroPeriodTask) {

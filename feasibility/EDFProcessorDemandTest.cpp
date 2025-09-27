@@ -1,7 +1,7 @@
 #include <cmath>
 #include "EDFProcessorDemandTest.hpp"
 
-void EDFProcessorDemandTest::CheckApplicability(const TaskSet &taskSet) const {
+void EDFProcessorDemandTest::CheckApplicability(const TaskSet& taskSet) const {
     if (!taskSet.IsSynchronous()) {
         throw InvalidFeasibilityTestException::CreateNonSynchronousException();
     }
@@ -11,24 +11,24 @@ void EDFProcessorDemandTest::CheckApplicability(const TaskSet &taskSet) const {
     }
 }
 
-bool EDFProcessorDemandTest::RunTestImpl(const TaskSet &taskSet) const {
+bool EDFProcessorDemandTest::RunTestImpl(const TaskSet& taskSet) const {
     double utilization = taskSet.GetUtilization();
     uint32_t L_lcm = taskSet.GetHyperPeriod();
     
     // Compute L_max
     uint32_t L_max = L_lcm;
-    if (utilization < 1) {
+    if (utilization < 1.0) {
         // Compute L_brh
         uint32_t L_brh = 0;
-        for (const PeriodicTask &task : taskSet.GetTasks()) {
+        for (const PeriodicTask& task : taskSet) {
             L_brh = std::max(L_brh, task.D);
         }
 
         double candidateL = 0.0;
-        for (const PeriodicTask &task : taskSet.GetTasks()) {
+        for (const PeriodicTask& task : taskSet) {
             candidateL += (task.T - task.D) * static_cast<double>(task.C) / task.T;
         }
-        candidateL /= (1 - utilization);
+        candidateL /= (1.0 - utilization);
 
         L_brh = std::max(L_brh, static_cast<uint32_t>(std::ceil(candidateL)));
 
@@ -52,9 +52,9 @@ bool EDFProcessorDemandTest::RunTestImpl(const TaskSet &taskSet) const {
     return true;
 }
 
-int32_t EDFProcessorDemandTest::ComputeProcessorDemand(const TaskSet &taskSet, int32_t controlPoint) const {
+int32_t EDFProcessorDemandTest::ComputeProcessorDemand(const TaskSet& taskSet, int32_t controlPoint) const {
     int32_t cpuDemand = 0;
-    for (const PeriodicTask &task : taskSet.GetTasks()) {
+    for (const PeriodicTask& task : taskSet) {
         int32_t valueToFloorWithT = controlPoint - (int32_t)task.D;
         if (valueToFloorWithT < 0) {
             // Make sure flooring works for negative numbers by moving down to closest negative multiple of T
